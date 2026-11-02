@@ -1,0 +1,85 @@
+SEMESTER PROJECT
+
+Design and Development of an Interactive 3D Web Portfolio
+Design and develop a modern, interactive, 3D web-based portfolio that showcases your personal profile, technical skills, academic projects, and professional achievements. The portfolio must integrate 3D graphics, a custom-designed avatar, an animated video, a Retrieval-Augmented Generation (RAG) based chatbot, and an email communication system. The objective is to combine web development, 3D modeling, animation, artificial intelligence, and backend integration into one complete project.
+
+Module 1: 3D Web-Based Portfolio
+Develop a responsive and visually appealing personal portfolio website.
+Interactive 3D environment or 3D elements.
+Home page with the name, introduction, and profile.
+About Me section.
+Skills and technologies section.
+Projects and achievements gallery.
+Education and experience section.
+Contact section.
+Smooth animations, navigation, and transitions.
+Responsive design for desktop, tablet, and mobile devices.
+Module 2: Custom 3D Avatar Using Blender
+Create an original 3D avatar representing you.
+Model or customize a 3D character using Blender.
+Apply appropriate materials, colors, and textures.
+Add basic rigging or pose the character where appropriate.
+Export the avatar in a web-compatible format such as GLB or glTF.
+Integrate the avatar into the portfolio website.
+Display the avatar with an appropriate animation, rotation, or interactive movement.
+Blender source file (.blend) and exported 3D model.
+
+Module 3: Short Animated Video Using Adobe After Effects
+Create a short promotional video introducing the student and their portfolio.
+Duration of approximately 30–60 seconds.
+Include the student's name and introduction.
+Showcase skills, projects, or achievements.
+Use appropriate typography, transitions, animations, and visual effects.
+Add background music or sound effects where appropriate and properly licensed.
+Export the final video in MP4 format and embed it into the portfolio.
+Final MP4 video and After Effects project file (.aep).
+
+Module 4: RAG-Based AI Chatbot
+Implement an AI-powered chatbot that answers questions about you using information provided.
+Collect information from CV, project descriptions, skills, education, and achievements.
+Process the documents and divide the content into searchable chunks.
+Generate embeddings and store them in a vector database or vector index.
+Retrieve relevant information based on a user's question.
+Use a large language model (LLM) to generate answers grounded in the retrieved information.
+Integrate the chatbot into the portfolio website with a user-friendly chat interface.
+Provide relevant answers about the student's background and projects.
+Avoid inventing personal information when the available documents do not contain the answer.
+A working chatbot integrated with the portfolio and a brief explanation of the RAG pipeline.
+
+Module 5: Email and Contact System
+Implement a functional contact system so visitors can send messages.
+Contact form containing name, email address, subject, and message.
+Input validation on both the frontend and backend.
+Send messages to the student's designated email address.
+Display appropriate success and error messages.
+Protect email credentials and API keys using environment variables.
+Include basic spam protection and secure handling of user input.
+A working contact form with evidence of successful email delivery.
+
+Module 6: Deployment and Documentation
+Deploy the completed portfolio so it can be accessed online.
+
+Additional Features for Extra Credit
+You may implement any of the following features for additional marks:
+Interactive 3D objects that respond to mouse movement.
+Dark and light themes.
+Voice interaction with the chatbot.
+Multilingual chatbot support.
+Animated 3D avatar expressions or gestures.
+Project filtering and search.
+Website analytics.
+Accessibility enhancements.
+Chatbot source citations linking answers to relevant portfolio content.
+Project / task ordering system etc.
+Required Submission Materials
+Each student must submit the following:
+Complete source code for the frontend and backend.
+Blender source file and exported avatar model.
+After Effects project file and final promotional video.
+Working RAG-based chatbot.
+Functional email/contact system.
+Project report in PDF format.
+README file containing setup and installation instructions.
+Screenshots demonstrating the major modules.
+Live deployment URL
+GitHub repository link or the complete project source archive.

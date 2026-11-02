@@ -1,0 +1,428 @@
+@import "tailwindcss";
+
+/*
+ * Every color on the site comes from these variables, including the 3D scenes
+ * (see lib/usePalette.ts). A palette is chosen with <html data-palette="...">.
+ *   accent  headings, links, tags, borders
+ *   accent2 buttons and calls to action
+ *   accent3 small highlights, never text
+ *   c1..c3  colors of the 3D shapes; label1/2 are text colors on the globe's white pills
+ */
+@theme {
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-fg: var(--fg);
+  --color-muted: var(--muted);
+  --color-accent: var(--accent);
+  --color-accent2: var(--accent2);
+  --color-accent3: var(--accent3);
+  --color-on-accent: var(--on-accent);
+  --color-line: var(--line);
+  --font-sans: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-display: "Space Grotesk", "Inter", system-ui, sans-serif;
+}
+
+/* Mint pop (default), light */
+:root {
+  --bg: #fffdf5;
+  --surface: rgb(255 255 255 / 0.85);
+  --fg: #10312f;
+  --muted: #476562;
+  --accent: #0f766e;
+  --accent2: #e11d74;
+  --accent3: #ffc933;
+  --on-accent: #ffffff;
+  --line: #b9e4dd;
+  --glow: 20 184 166;
+  --btn-glow: 225 29 116;
+  --btn-a: #f0398a;
+  --btn-b: #be185d;
+  --btn-shadow: #831843;
+  --btn-text: #ffffff;
+  --ex1: #5eead4;
+  --ex2: #14b8a6;
+  --blob1: rgb(20 184 166 / 0.22);
+  --blob2: rgb(255 95 162 / 0.16);
+  --blob3: rgb(255 201 51 / 0.22);
+  --c1: #14b8a6;
+  --c2: #ff5fa2;
+  --c3: #ffc933;
+  --label1: #0f766e;
+  --label2: #be185d;
+  --disc: #99f6e4;
+}
+/* Mint pop, dark */
+:root[data-theme="dark"] {
+  --bg: #061f1e;
+  --surface: rgb(10 54 52 / 0.72);
+  --fg: #effffb;
+  --muted: #9fd3cc;
+  --accent: #2dd4bf;
+  --accent2: #ff6fae;
+  --on-accent: #061f1e;
+  --line: #1b6b64;
+  --glow: 45 212 191;
+  --btn-glow: 255 95 162;
+  --ex1: #0f766e;
+  --ex2: #115e59;
+  --blob1: rgb(20 184 166 / 0.3);
+  --blob2: rgb(255 95 162 / 0.16);
+  --blob3: rgb(255 201 51 / 0.1);
+  --disc: #0f766e;
+}
+
+/* Electric cyber */
+:root[data-palette="cyber"][data-theme="dark"] {
+  --bg: #050816;
+  --surface: rgb(12 20 56 / 0.75);
+  --fg: #eaf2ff;
+  --muted: #9db0d9;
+  --accent: #00e5ff;
+  --accent2: #ff2bd6;
+  --accent3: #b6ff3b;
+  --on-accent: #03101c;
+  --line: #1e3a8a;
+  --glow: 0 229 255;
+  --btn-glow: 255 43 214;
+  --btn-a: #e11bc3;
+  --btn-b: #9d0f8a;
+  --btn-shadow: #55064a;
+  --btn-text: #ffffff;
+  --ex1: #1d4ed8;
+  --ex2: #1e3a8a;
+  --blob1: rgb(59 130 246 / 0.32);
+  --blob2: rgb(255 43 214 / 0.2);
+  --blob3: rgb(0 229 255 / 0.16);
+  --c1: #3b82f6;
+  --c2: #00e5ff;
+  --c3: #b6ff3b;
+  --label1: #1d4ed8;
+  --label2: #a00d8c;
+  --disc: #0b1b4d;
+}
+/* Sunset candy */
+:root[data-palette="sunset"][data-theme="dark"] {
+  --bg: #1a0b2e;
+  --surface: rgb(52 22 76 / 0.72);
+  --fg: #fff3ea;
+  --muted: #e3bccb;
+  --accent: #ff7a6e;
+  --accent2: #14a89b;
+  --accent3: #ffd23f;
+  --on-accent: #2a0a14;
+  --line: #66306f;
+  --glow: 255 122 110;
+  --btn-glow: 20 168 155;
+  --btn-a: #0d9488;
+  --btn-b: #0f766e;
+  --btn-shadow: #064e46;
+  --btn-text: #ffffff;
+  --ex1: #e8554e;
+  --ex2: #9d2f5a;
+  --blob1: rgb(255 94 91 / 0.28);
+  --blob2: rgb(255 159 28 / 0.18);
+  --blob3: rgb(124 58 237 / 0.2);
+  --c1: #ff5e5b;
+  --c2: #ff9f1c;
+  --c3: #ffd23f;
+  --label1: #c2410c;
+  --label2: #0f766e;
+  --disc: #3b1d5a;
+}
+/* Purple & gold */
+:root[data-palette="royal"][data-theme="dark"] {
+  --bg: #12072b;
+  --surface: rgb(38 19 84 / 0.72);
+  --fg: #f6f0ff;
+  --muted: #c8b9f0;
+  --accent: #a78bfa;
+  --accent2: #ffc83d;
+  --accent3: #ff5fa2;
+  --on-accent: #12072b;
+  --line: #4c2f9a;
+  --glow: 139 92 246;
+  --btn-glow: 255 200 61;
+  --btn-a: #ffd24d;
+  --btn-b: #f5a80a;
+  --btn-shadow: #8a5a00;
+  --btn-text: #2b1500;
+  --ex1: #7c3aed;
+  --ex2: #4c1d95;
+  --blob1: rgb(139 92 246 / 0.34);
+  --blob2: rgb(255 200 61 / 0.14);
+  --blob3: rgb(255 95 162 / 0.16);
+  --c1: #8b5cf6;
+  --c2: #ffc83d;
+  --c3: #ff5fa2;
+  --label1: #6d28d9;
+  --label2: #b45309;
+  --disc: #2e1065;
+}
+
+
+
+/* ---------- light variants of the other palettes (Mint's light theme is the :root default) ---------- */
+/* Electric cyber, light */
+:root[data-palette="cyber"]:not([data-theme="dark"]) {
+  --bg: #f3f7ff;
+  --surface: rgb(255 255 255 / 0.85);
+  --fg: #0b1a3a;
+  --muted: #475a85;
+  --accent: #2563eb;
+  --accent2: #c026d3;
+  --accent3: #65a30d;
+  --on-accent: #ffffff;
+  --line: #c7d6fb;
+  --glow: 37 99 235;
+  --btn-glow: 192 38 211;
+  --btn-a: #d946ef;
+  --btn-b: #a21caf;
+  --btn-shadow: #6b0f77;
+  --btn-text: #ffffff;
+  --ex1: #93c5fd;
+  --ex2: #3b82f6;
+  --blob1: rgb(59 130 246 / 0.22);
+  --blob2: rgb(217 70 239 / 0.16);
+  --blob3: rgb(34 211 238 / 0.2);
+  --c1: #3b82f6;
+  --c2: #00c8e6;
+  --c3: #a3e635;
+  --label1: #1d4ed8;
+  --label2: #a21caf;
+  --disc: #bfdbfe;
+}
+/* Sunset candy, light */
+:root[data-palette="sunset"]:not([data-theme="dark"]) {
+  --bg: #fff3ea;
+  --surface: rgb(255 255 255 / 0.85);
+  --fg: #3b1330;
+  --muted: #7a4a5a;
+  --accent: #c93a26;
+  --accent2: #0f766e;
+  --accent3: #f59e0b;
+  --on-accent: #ffffff;
+  --line: #f3cdb9;
+  --glow: 201 58 38;
+  --btn-glow: 15 118 110;
+  --btn-a: #0d9488;
+  --btn-b: #0f766e;
+  --btn-shadow: #064e46;
+  --btn-text: #ffffff;
+  --ex1: #ffb4a6;
+  --ex2: #ff7a6e;
+  --blob1: rgb(255 94 91 / 0.2);
+  --blob2: rgb(255 159 28 / 0.22);
+  --blob3: rgb(124 58 237 / 0.12);
+  --c1: #ff5e5b;
+  --c2: #ff9f1c;
+  --c3: #ffc933;
+  --label1: #c2410c;
+  --label2: #0f766e;
+  --disc: #ffd9c2;
+}
+/* Purple and gold, light */
+:root[data-palette="royal"]:not([data-theme="dark"]) {
+  --bg: #f8f4ff;
+  --surface: rgb(255 255 255 / 0.85);
+  --fg: #1d0f40;
+  --muted: #5b4a8a;
+  --accent: #6d28d9;
+  --accent2: #b45309;
+  --accent3: #db2777;
+  --on-accent: #ffffff;
+  --line: #ddd0f7;
+  --glow: 109 40 217;
+  --btn-glow: 245 158 11;
+  --btn-a: #ffd24d;
+  --btn-b: #f5a80a;
+  --btn-shadow: #8a5a00;
+  --btn-text: #2b1500;
+  --ex1: #c4b5fd;
+  --ex2: #8b5cf6;
+  --blob1: rgb(139 92 246 / 0.25);
+  --blob2: rgb(255 200 61 / 0.2);
+  --blob3: rgb(255 95 162 / 0.14);
+  --c1: #8b5cf6;
+  --c2: #ffc83d;
+  --c3: #ff5fa2;
+  --label1: #6d28d9;
+  --label2: #b45309;
+  --disc: #e4d8ff;
+}
+
+html { scroll-behavior: smooth; overflow-x: clip; }
+body {
+  color: var(--fg);
+  font-family: var(--font-sans);
+  background:
+    radial-gradient(1100px 700px at 5% -10%, var(--blob1), transparent 70%),
+    radial-gradient(900px 600px at 100% 15%, var(--blob2), transparent 70%),
+    radial-gradient(900px 700px at 40% 110%, var(--blob3), transparent 70%),
+    var(--bg);
+  background-attachment: fixed;
+}
+
+:focus-visible { outline: 3px solid var(--accent2); outline-offset: 3px; }
+
+/* 3D buttons: a solid "thickness" shadow that squashes when pressed. */
+.btn-3d {
+  display: inline-block;
+  border-radius: 999px;
+  padding: 0.7rem 1.7rem;
+  font-weight: 700;
+  color: var(--btn-text);
+  background: linear-gradient(135deg, var(--btn-a), var(--btn-b));
+  box-shadow: 0 6px 0 var(--btn-shadow), 0 14px 22px rgb(var(--btn-glow) / 0.3);
+  transition: transform 0.12s, box-shadow 0.12s;
+}
+.btn-3d:hover { transform: translateY(-2px); box-shadow: 0 8px 0 var(--btn-shadow), 0 18px 28px rgb(var(--btn-glow) / 0.4); }
+.btn-3d:active { transform: translateY(5px); box-shadow: 0 1px 0 var(--btn-shadow), 0 4px 8px rgb(var(--btn-glow) / 0.3); }
+.btn-3d:disabled { opacity: 0.6; transform: none; }
+.btn-ghost-3d {
+  display: inline-block;
+  border-radius: 999px;
+  padding: 0.7rem 1.7rem;
+  font-weight: 700;
+  color: var(--fg);
+  border: 2px solid var(--accent);
+  background: var(--surface);
+  box-shadow: 0 6px 0 var(--accent);
+  transition: transform 0.12s, box-shadow 0.12s;
+}
+.btn-ghost-3d:hover { transform: translateY(-2px); box-shadow: 0 8px 0 var(--accent); }
+.btn-ghost-3d:active { transform: translateY(5px); box-shadow: 0 1px 0 var(--accent); }
+
+/* The visitor's chat bubbles use the button gradient. */
+.bubble-user {
+  color: var(--btn-text);
+  background: linear-gradient(135deg, var(--btn-a), var(--btn-b));
+}
+
+/* Extruded headline text. */
+.title-3d {
+  text-shadow:
+    1px 1px 0 var(--ex1), 2px 2px 0 var(--ex1), 3px 3px 0 var(--ex2), 4px 4px 0 var(--ex2),
+    6px 9px 14px rgb(0 0 0 / 0.22);
+}
+
+/* Cards that tilt toward the pointer (see Tilt.tsx). */
+.tilt {
+  position: relative;
+  transform-style: preserve-3d;
+  transition: transform 0.15s ease-out, box-shadow 0.2s, border-color 0.2s;
+  will-change: transform;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 10px 30px rgb(0 0 0 / 0.1);
+}
+.tilt:hover { border-color: var(--accent2); box-shadow: 0 22px 50px rgb(var(--glow) / 0.3); }
+.tilt-glare {
+  pointer-events: none;
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  opacity: 0;
+  transition: opacity 0.2s;
+  /* Small, faint highlight so it never washes out the text underneath. */
+  background: radial-gradient(circle 90px at var(--gx, 50%) var(--gy, 50%), rgb(255 255 255 / 0.1), transparent);
+}
+.tilt:hover .tilt-glare { opacity: 1; }
+.pop { transform: translateZ(34px); }
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+  .tilt { transform: none !important; }
+}
+
+
+/* ---------- fancy layer ---------- */
+::selection { background: var(--accent2); color: #fff; }
+html { scrollbar-color: var(--accent) transparent; scrollbar-width: thin; }
+::-webkit-scrollbar { width: 10px; }
+::-webkit-scrollbar-thumb { background: linear-gradient(var(--accent), var(--accent2)); border-radius: 999px; border: 2px solid transparent; background-clip: content-box; }
+
+h1, h2, h3, .font-display { font-family: var(--font-display); letter-spacing: -0.02em; }
+
+/* Shine sweep across buttons on hover. */
+.btn-3d, .btn-ghost-3d { position: relative; overflow: hidden; isolation: isolate; }
+.btn-3d::after, .btn-ghost-3d::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: linear-gradient(110deg, transparent 30%, rgb(255 255 255 / 0.45) 50%, transparent 70%);
+  transform: translateX(-130%);
+  transition: transform 0.7s;
+}
+.btn-3d:hover::after, .btn-ghost-3d:hover::after { transform: translateX(130%); }
+
+/* Cards get a gradient rim that fades in on hover. */
+.tilt::before {
+  content: "";
+  position: absolute;
+  inset: -2px;
+  border-radius: inherit;
+  padding: 2px;
+  pointer-events: none;
+  background: linear-gradient(135deg, var(--accent), var(--accent2), var(--accent3));
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+.tilt:hover::before { opacity: 1; }
+
+/* Section eyebrow: "01 / About" */
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--accent2);
+}
+.eyebrow::before { content: ""; width: 2.2rem; height: 2px; background: linear-gradient(90deg, var(--accent2), transparent); }
+
+/* Glass surfaces (nav, badges). */
+.glass { background: var(--surface); backdrop-filter: blur(16px) saturate(1.4); border: 1px solid var(--line); box-shadow: 0 8px 30px rgb(0 0 0 / 0.12); }
+
+/* Animated gradient text. */
+.gradient-text {
+  background: linear-gradient(100deg, var(--accent), var(--accent2), var(--accent3), var(--accent));
+  background-size: 250% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: gradient-pan 6s linear infinite;
+}
+@keyframes gradient-pan { to { background-position: 250% 0; } }
+
+/* Scrolling tech ribbon. */
+.marquee-track { display: flex; width: max-content; animation: marquee 38s linear infinite; }
+.marquee:hover .marquee-track { animation-play-state: paused; }
+@keyframes marquee { to { transform: translateX(-50%); } }
+
+/* Blinking caret for the typed role line. */
+.caret { display: inline-block; width: 0.1em; height: 1em; margin-left: 0.12em; vertical-align: -0.12em; background: currentColor; animation: caret 0.9s steps(1) infinite; }
+@keyframes caret { 50% { opacity: 0; } }
+
+/* Splash screen. */
+.splash-ring {
+  width: 7rem;
+  height: 7rem;
+  border-radius: 999px;
+  background: conic-gradient(from 0deg, var(--accent), var(--accent2), var(--accent3), var(--accent));
+  -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 7px), #000 calc(100% - 6px));
+  mask: radial-gradient(farthest-side, transparent calc(100% - 7px), #000 calc(100% - 6px));
+  animation: spin 1.4s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+@keyframes bounce-y { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(8px); } }
+
+@media (prefers-reduced-motion: reduce) {
+  .marquee-track, .gradient-text, .splash-ring, .caret { animation: none !important; }
+}
