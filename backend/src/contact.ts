@@ -67,21 +67,43 @@ export async function handleContact(req: Request, res: Response) {
     return res.json({ ok: true });
   }
 
-  const mailer = transport();
+  // Resend (HTTPS) is used when RESEND_API_KEY is set, for hosts that block SMTP; otherwise Gmail SMTP.
+  const resendKey = process.env.RESEND_API_KEY;
+  const mailer = resendKey ? null : transport();
   const to = process.env.CONTACT_TO || process.env.SMTP_USER;
-  if (!mailer || !to) return res.status(503).json({ error: "The contact form is not configured yet." });
+  if ((!mailer && !resendKey) || !to) return res.status(503).json({ error: "The contact form is not configured yet." });
 
   try {
     // Plain-text body only: visitor input is never interpreted as HTML.
-    const info = await mailer.sendMail({
-      from: { name: "Portfolio contact form", address: process.env.SMTP_USER! },
-      to,
-      replyTo: { name, address: email },
-      subject: `[Portfolio] ${subject}`,
-      text: `From: ${name} <${email}>\nSubject: ${subject}\n\n${message}\n`,
-    });
-    console.log(`contact: delivered ${info.messageId}`);
-    await logDelivery(`delivered messageId=${info.messageId} from=${email} accepted=${info.accepted.join(",")}`);
+    const text = `From: ${name} <${email}>\nSubject: ${subject}\n\n${message}\n`;
+    let id: string;
+    if (resendKey) {
+      const r = await fetch("https://api.resend.com/emails", {
+        method: "POST",
+        headers: { Authorization: `Bearer ${resendKey}`, "Content-Type": "application/json" },
+        body: JSON.stringify({
+          from: "Portfolio contact form <onboarding@resend.dev>",
+          to: [to],
+          reply_to: email,
+          subject: `[Portfolio] ${subject}`,
+          text,
+        }),
+      });
+      const body = (await r.json().catch(() => ({}))) as { id?: string; message?: string };
+      if (!r.ok) throw new Error(body.message ?? `Resend responded ${r.status}`);
+      id = body.id ?? "resend";
+    } else {
+      const info = await mailer!.sendMail({
+        from: { name: "Portfolio contact form", address: process.env.SMTP_USER! },
+        to,
+        replyTo: { name, address: email },
+        subject: `[Portfolio] ${subject}`,
+        text,
+      });
+      id = info.messageId;
+    }
+    console.log(`contact: delivered ${id}`);
+    await logDelivery(`delivered messageId=${id} from=${email} to=${to}`);
     res.json({ ok: true });
   } catch (err) {
     console.error("contact: send failed:", err);
