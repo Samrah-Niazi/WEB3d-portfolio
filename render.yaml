@@ -1,0 +1,21 @@
+# Render Blueprint: creates the backend (chatbot + contact form API) from this repo.
+services:
+  - type: web
+    name: samrah-portfolio-api
+    runtime: node
+    rootDir: backend
+    plan: free
+    buildCommand: npm install && npm run ingest && npm run build
+    startCommand: npm start
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_VERSION
+        value: 22
+      - key: ANTHROPIC_API_KEY
+        sync: false
+      - key: SMTP_USER
+        sync: false
+      - key: SMTP_PASS
+        sync: false
+      - key: CLIENT_ORIGIN
+        sync: false
