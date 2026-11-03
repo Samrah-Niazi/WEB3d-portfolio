@@ -1,8 +1,0 @@
-node_modules
-dist
-.env
-.env.*
-api key
-app password
-logs
-data/index.json

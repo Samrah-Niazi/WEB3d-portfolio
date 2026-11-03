@@ -4,25 +4,26 @@ import { fileURLToPath } from "node:url";
 import { chunkMarkdown, type Chunk } from "./chunk.js";
 import { embed, EMBED_MODEL } from "./embeddings.js";
 
-const DATA_DIR = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../../data");
-const INDEX_FILE = path.join(DATA_DIR, "index.json");
+const dataDir = () => path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../../data");
+const indexFile = () => path.join(dataDir(), "index.json");
 
 export type IndexedChunk = Chunk & { embedding: number[] };
 type Index = { model: string; chunks: IndexedChunk[] };
 
-let index: Index | null = null;
+// The hosted build bundles the saved index and hands it over here, so it needs no file access at all.
+let index: Index | null = (globalThis as { __RAG_INDEX__?: Index }).__RAG_INDEX__ ?? null;
 
 export async function buildIndex(): Promise<Index> {
-  const files = (await readdir(DATA_DIR)).filter((f) => f.endsWith(".md"));
+  const files = (await readdir(dataDir())).filter((f) => f.endsWith(".md"));
   const chunks: Chunk[] = [];
-  for (const f of files) chunks.push(...chunkMarkdown(await readFile(path.join(DATA_DIR, f), "utf8"), f));
+  for (const f of files) chunks.push(...chunkMarkdown(await readFile(path.join(dataDir(), f), "utf8"), f));
 
   const vectors: number[][] = [];
   for (let i = 0; i < chunks.length; i += 16) {
     vectors.push(...(await embed(chunks.slice(i, i + 16).map((c) => c.text))));
   }
   const built: Index = { model: EMBED_MODEL, chunks: chunks.map((c, i) => ({ ...c, embedding: vectors[i] })) };
-  await writeFile(INDEX_FILE, JSON.stringify(built));
+  await writeFile(indexFile(), JSON.stringify(built));
   return built;
 }
 
@@ -30,8 +31,8 @@ export async function buildIndex(): Promise<Index> {
 export async function loadIndex(): Promise<Index> {
   if (index) return index;
   try {
-    await access(INDEX_FILE);
-    const saved = JSON.parse(await readFile(INDEX_FILE, "utf8")) as Index;
+    await access(indexFile());
+    const saved = JSON.parse(await readFile(indexFile(), "utf8")) as Index;
     if (saved.model === EMBED_MODEL) return (index = saved);
   } catch {}
   return (index = await buildIndex());

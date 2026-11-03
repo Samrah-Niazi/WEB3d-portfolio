@@ -5,7 +5,6 @@ dist/
 !.env.example
 *.tsbuildinfo
 .DS_Store
-backend/data/index.json
 assets/**/*.autosave
 *.blend1
 backend/logs/
