@@ -2,6 +2,7 @@ import { lazy, Suspense, useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { profile } from "../data/profile";
 import { useOnScreen } from "../lib/useOnScreen";
+import Marquee from "./Marquee";
 
 const HeroScene = lazy(() => import("./HeroScene"));
 
@@ -43,6 +44,25 @@ function RoleTyper() {
   );
 }
 
+// The "Try a move" chips. On phones they sit right under the avatar (see App); from tablet up they sit in the hero text.
+export function MoveChips({ className = "" }: { className?: string }) {
+  return (
+    <div className={`flex flex-wrap items-center gap-2 ${className}`}>
+      <span className="text-sm text-muted">Try a move:</span>
+      {MOVES.map((m) => (
+        <button
+          key={m.name}
+          type="button"
+          onClick={() => window.dispatchEvent(new CustomEvent("avatar-play", { detail: m.name }))}
+          className="glass rounded-full px-3 py-1 text-sm font-semibold transition hover:border-accent"
+        >
+          <span aria-hidden="true">{m.icon}</span> {m.name}
+        </button>
+      ))}
+    </div>
+  );
+}
+
 const rise = (delay: number) => ({
   initial: { opacity: 0, y: 28 },
   animate: { opacity: 1, y: 0 },
@@ -78,18 +98,12 @@ export default function Hero() {
           </button>
         </motion.div>
 
-        <motion.div className="pointer-events-auto mt-5 flex max-w-md flex-wrap items-center gap-2" {...rise(0.7)}>
-          <span className="text-sm text-muted">Try a move:</span>
-          {MOVES.map((m) => (
-            <button
-              key={m.name}
-              type="button"
-              onClick={() => window.dispatchEvent(new CustomEvent("avatar-play", { detail: m.name }))}
-              className="glass rounded-full px-3 py-1 text-sm font-semibold transition hover:border-accent"
-            >
-              <span aria-hidden="true">{m.icon}</span> {m.name}
-            </button>
-          ))}
+        {/* Phones get the moving technologies strip here, and the move chips go under the avatar instead. */}
+        <motion.div className="mt-6 md:hidden" {...rise(0.7)}>
+          <Marquee compact />
+        </motion.div>
+        <motion.div className="pointer-events-auto hidden max-w-md md:block mt-5" {...rise(0.7)}>
+          <MoveChips />
         </motion.div>
         <p className="pointer-events-none mt-3 hidden max-w-sm text-sm text-muted sm:block">
           Drag the avatar to spin her around, click her to wave, or click her base to twirl.

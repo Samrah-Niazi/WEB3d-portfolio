@@ -426,3 +426,109 @@ h1, h2, h3, .font-display { font-family: var(--font-display); letter-spacing: -0
 @media (prefers-reduced-motion: reduce) {
   .marquee-track, .gradient-text, .splash-ring, .caret { animation: none !important; }
 }
+
+/* ------------------------------------------------------------------ own card language: game cartridges, tickets, quest log */
+.cart {
+  position: relative;
+  height: 100%;
+  filter: drop-shadow(6px 7px 0 color-mix(in srgb, var(--accent) 38%, transparent));
+  transition: transform 0.18s ease, filter 0.18s ease;
+}
+.cart:hover,
+.cart:focus-within {
+  transform: translate(-3px, -4px);
+  filter: drop-shadow(10px 12px 0 color-mix(in srgb, var(--accent2) 55%, transparent));
+}
+.cart-edge {
+  --cut: 22px;
+  height: 100%;
+  padding: 2px;
+  background: var(--accent);
+  clip-path: polygon(var(--cut) 0, calc(100% - var(--cut)) 0, 100% var(--cut), 100% calc(100% - 12px), calc(100% - 12px) 100%, 0 100%, 0 var(--cut));
+}
+.cart-edge.feat { background: linear-gradient(135deg, var(--accent), var(--accent2) 60%, var(--accent3)); }
+.cart-body {
+  --cut: 20px;
+  height: 100%;
+  background: var(--bg);
+  clip-path: polygon(var(--cut) 0, calc(100% - var(--cut)) 0, 100% var(--cut), 100% calc(100% - 11px), calc(100% - 11px) 100%, 0 100%, 0 var(--cut));
+}
+.cart-label {
+  background: repeating-linear-gradient(135deg, transparent 0 8px, color-mix(in srgb, var(--accent) 14%, transparent) 8px 16px);
+  border-bottom: 2px dashed var(--line);
+}
+.cart-pins {
+  height: 9px;
+  margin-top: auto;
+  background: repeating-linear-gradient(90deg, var(--accent) 0 3px, transparent 3px 8px);
+  opacity: 0.45;
+}
+.tag {
+  display: inline-block;
+  padding: 0.15rem 0.55rem;
+  font-family: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 13%, transparent);
+  border-left: 3px solid var(--accent2);
+}
+.pix-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.25rem 0.7rem;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--fg);
+  background: var(--bg);
+  border: 2px solid var(--fg);
+  box-shadow: 3px 3px 0 var(--accent2);
+  transition: transform 0.12s ease, box-shadow 0.12s ease, background 0.12s ease;
+}
+.pix-btn:hover { transform: translate(2px, 2px); box-shadow: 1px 1px 0 var(--accent2); background: var(--accent3); color: #1a1a1a; }
+.ticket {
+  position: relative;
+  display: flex;
+  background: var(--bg);
+  border: 2px solid var(--accent3);
+  border-radius: 6px;
+  -webkit-mask: radial-gradient(circle 9px at 5rem 0, transparent 97%, #000) top / 100% 51% no-repeat,
+    radial-gradient(circle 9px at 5rem 100%, transparent 97%, #000) bottom / 100% 51% no-repeat;
+  mask: radial-gradient(circle 9px at 5rem 0, transparent 97%, #000) top / 100% 51% no-repeat,
+    radial-gradient(circle 9px at 5rem 100%, transparent 97%, #000) bottom / 100% 51% no-repeat;
+  transition: transform 0.18s ease;
+}
+.ticket:hover { transform: rotate(-0.8deg) translateY(-3px); }
+.ticket-stub {
+  display: grid;
+  place-items: center;
+  width: 5rem;
+  flex: none;
+  font-size: 2rem;
+  color: #1a1a1a;
+  background: var(--accent3);
+  border-right: 2px dashed color-mix(in srgb, var(--fg) 45%, transparent);
+}
+.stamp {
+  display: inline-block;
+  padding: 0.1rem 0.6rem;
+  font-family: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+  font-size: 0.78rem;
+  font-weight: 800;
+  color: #1a1a1a;
+  background: var(--accent3);
+  transform: rotate(-2deg);
+}
+.quest-node {
+  position: absolute;
+  left: -2.05rem;
+  top: 0.4rem;
+  width: 1rem;
+  height: 1rem;
+  transform: rotate(45deg);
+  border: 3px solid var(--bg);
+  outline: 2px solid var(--accent);
+}

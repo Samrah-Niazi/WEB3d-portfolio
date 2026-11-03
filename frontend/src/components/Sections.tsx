@@ -1,7 +1,6 @@
 import { lazy, Suspense, useEffect, useMemo, useRef, useState } from "react";
 import { animate, useInView } from "framer-motion";
 import Section from "./Section";
-import Tilt from "./Tilt";
 import ContactForm from "./ContactForm";
 import MediaModal from "./MediaModal";
 import { useAsset } from "../lib/useAsset";
@@ -39,15 +38,15 @@ const PHOTO_URL = "/images/profile.jpg";
 function Photo() {
   const has = useAsset(PHOTO_URL);
   return (
-    <Tilt className="aspect-square w-44 overflow-hidden rounded-3xl border-2 border-accent bg-surface" max={16}>
+    <div className="aspect-square w-44 -rotate-3 overflow-hidden border-4 border-fg bg-surface shadow-[7px_7px_0_var(--accent2)]">
       {has ? (
         <img src={PHOTO_URL} alt={`Portrait of ${profile.name}`} className="h-full w-full object-cover" />
       ) : (
-        <div aria-hidden="true" className="pop flex h-full w-full items-center justify-center text-6xl font-extrabold text-accent">
+        <div aria-hidden="true" className="flex h-full w-full items-center justify-center text-6xl font-extrabold text-accent">
           {profile.name.split(" ").map((w) => w[0]).join("")}
         </div>
       )}
-    </Tilt>
+    </div>
   );
 }
 
@@ -58,14 +57,15 @@ export function About() {
         <div className="space-y-4 text-lg text-muted">
           {profile.about.map((p) => <p key={p}>{p}</p>)}
         </div>
-        <div className="space-y-5">
+        <div className="space-y-6">
           <Photo />
-          <dl className="grid grid-cols-3 gap-3 lg:grid-cols-1">
+          {/* A HUD read-out, not boxes: three numbers split by dashed rules. */}
+          <dl className="grid grid-cols-3 divide-x-2 divide-dashed divide-line border-y-2 border-dashed border-line lg:grid-cols-1 lg:divide-x-0 lg:divide-y-2">
             {stats.map((s, i) => (
-              <Tilt key={s.label} className="rounded-2xl border-2 border-line bg-surface p-4">
-                <dt className="pop text-sm text-muted">{s.label}</dt>
-                <dd className={`pop title-3d text-4xl font-extrabold ${GROUP_COLORS[i]}`}><CountUp to={Number(s.value)} /></dd>
-              </Tilt>
+              <div key={s.label} className="px-3 py-3 lg:flex lg:items-baseline lg:justify-between">
+                <dt className="font-mono text-xs font-bold uppercase tracking-wider text-muted">{s.label}</dt>
+                <dd className={`font-display text-4xl font-extrabold ${GROUP_COLORS[i]}`}><CountUp to={Number(s.value)} /></dd>
+              </div>
             ))}
           </dl>
         </div>
@@ -80,16 +80,18 @@ export function Skills() {
       <Suspense fallback={<div className="mb-10 h-[26rem]" />}>
         <SkillsGlobe />
       </Suspense>
-      <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+      {/* A spec sheet: one ruled row per skill group, no cards. */}
+      <div className="divide-y-2 divide-dashed divide-line border-y-2 border-dashed border-line">
         {skills.map((g, i) => (
-          <Tilt key={g.group} className="rounded-2xl border-2 border-line bg-surface p-5">
-            <h3 className={`pop mb-3 text-lg font-bold ${GROUP_COLORS[i % GROUP_COLORS.length]}`}>{g.group}</h3>
+          <div key={g.group} className="grid gap-3 py-5 md:grid-cols-[15rem_1fr] md:items-baseline md:gap-8">
+            <h3 className="font-display text-xl font-bold">
+              <span className="mr-2 font-mono text-sm text-accent2">{String(i + 1).padStart(2, "0")}</span>
+              {g.group}
+            </h3>
             <ul className="flex flex-wrap gap-2">
-              {g.items.map((item) => (
-                <li key={item} className="rounded-full border border-line px-3 py-1 text-sm text-muted">{item}</li>
-              ))}
+              {g.items.map((item) => <li key={item} className="tag">{item}</li>)}
             </ul>
-          </Tilt>
+          </div>
         ))}
       </div>
     </Section>
@@ -106,7 +108,7 @@ function MediaButton({ media, onOpen }: { media: Media; onOpen: (m: Media) => vo
         e.stopPropagation();
         onOpen(media);
       }}
-      className="pop mt-3 inline-flex items-center gap-2 rounded-full border-2 border-accent2 px-3 py-1 text-sm font-bold text-accent2 hover:bg-accent2 hover:text-[var(--btn-text)]"
+      className="pix-btn mr-2 mt-3"
     >
       <span aria-hidden="true">{media.type === "video" ? "▶" : "🖼"}</span> {media.label}
     </button>
@@ -132,38 +134,35 @@ export function Projects() {
 
   return (
     <Section id="projects" title="Projects & achievements" eyebrow="04 / Work">
-      <div className="mb-8 grid gap-4 sm:grid-cols-2">
+      <div className="mb-10 grid gap-5 sm:grid-cols-2">
         {achievements.map((a) => (
-          <Tilt
+          <a
             key={a.title}
-            className="rounded-2xl border-2 border-accent3 bg-surface p-5"
-            onClick={() => window.open(a.link, "_blank", "noopener,noreferrer")}
+            href={a.link}
+            target="_blank"
+            rel="noreferrer"
+            aria-label={`${a.title}: view on LinkedIn (opens in a new tab)`}
+            className="ticket"
           >
-            <p className="pop text-sm font-bold uppercase tracking-wide text-accent2">★ Achievement</p>
-            <h3 className="pop text-xl font-extrabold">{a.title}</h3>
-            <p className="pop text-sm text-muted">{a.detail}</p>
-            <a
-              href={a.link}
-              target="_blank"
-              rel="noreferrer"
-              onClick={(e) => e.stopPropagation()}
-              aria-label={`${a.title}: view on LinkedIn (opens in a new tab)`}
-              className="pop mt-3 inline-flex items-center gap-2 rounded-full border-2 border-accent px-3 py-1 text-sm font-bold text-accent hover:bg-accent hover:text-on-accent"
-            >
-              View on LinkedIn <span aria-hidden="true">↗</span>
-            </a>
-          </Tilt>
+            <span className="ticket-stub" aria-hidden="true">★</span>
+            <span className="block p-4">
+              <span className="font-mono text-xs font-bold uppercase tracking-wider text-accent2">Achievement unlocked</span>
+              <span className="mt-1 block font-display text-xl font-extrabold">{a.title}</span>
+              <span className="block text-sm text-muted">{a.detail}</span>
+              <span className="mt-2 block text-sm font-bold text-accent underline">View on LinkedIn ↗</span>
+            </span>
+          </a>
         ))}
       </div>
 
-      <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center">
+      <div className="mb-8 flex flex-col gap-3 sm:flex-row sm:items-center">
         <input
           type="search"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           placeholder="Search projects or tech (e.g. Unity, VR)"
           aria-label="Search projects"
-          className="rounded-xl border-2 border-line bg-surface px-4 py-2 sm:w-72"
+          className="border-2 border-fg bg-bg px-4 py-2 font-mono text-sm shadow-[3px_3px_0_var(--accent)] sm:w-72"
         />
         <div className="flex flex-wrap gap-2" role="group" aria-label="Filter by category">
           {categories.map((c) => (
@@ -171,20 +170,20 @@ export function Projects() {
               key={c}
               onClick={() => setCat(c)}
               aria-pressed={cat === c}
-              className={`rounded-full border-2 px-4 py-1 text-sm font-semibold transition ${
-                cat === c ? "border-accent bg-accent text-on-accent" : "border-line text-muted hover:border-accent"
+              className={`border-2 px-3 py-1 font-mono text-xs font-bold uppercase tracking-wide transition ${
+                cat === c ? "border-fg bg-accent text-on-accent shadow-[3px_3px_0_var(--accent2)]" : "border-line text-muted hover:border-fg"
               }`}
             >
               {c}
             </button>
           ))}
         </div>
-        <label className="flex items-center gap-2 text-sm text-muted sm:ml-auto">
+        <label className="flex items-center gap-2 font-mono text-xs font-bold uppercase text-muted sm:ml-auto">
           Order
           <select
             value={order}
             onChange={(e) => setOrder(e.target.value as "featured" | "az")}
-            className="rounded-lg border-2 border-line bg-surface px-2 py-1.5 text-fg"
+            className="border-2 border-fg bg-bg px-2 py-1.5 text-fg"
           >
             <option value="featured">Featured first</option>
             <option value="az">A to Z</option>
@@ -193,48 +192,55 @@ export function Projects() {
       </div>
 
       <p className="sr-only" role="status">{shown.length} projects shown</p>
-      <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-        {shown.map((p) => (
-          <Tilt
-            key={p.title}
-            onClick={p.media ? () => setViewing(p.media!) : undefined}
-            className={`rounded-2xl border-2 bg-surface p-5 ${p.featured ? "border-accent" : "border-line"}`}
-          >
-            <p className="pop text-xs font-bold uppercase tracking-wide text-muted">
-              {p.featured ? "★ Featured · " : ""}{p.category}
-            </p>
-            <h3 className="pop mt-1 text-xl font-extrabold">{p.title}</h3>
-            <p className="pop mt-1 text-sm font-semibold text-accent">{p.stack}</p>
-            <p className="mt-3 text-sm text-muted">{p.summary}</p>
-            <ul className="pop mt-4 flex flex-wrap gap-2 text-xs font-semibold text-accent">
-              {p.tags.map((t) => <li key={t} className="rounded-full border border-accent/50 px-2 py-0.5">{t}</li>)}
-            </ul>
-            {p.media && <MediaButton media={p.media} onOpen={setViewing} />}
-            {p.play && (
-              <a
-                href={p.play}
-                target="_blank"
-                rel="noreferrer"
-                onClick={(e) => e.stopPropagation()}
-                aria-label={`Play ${p.title} on itch.io (opens in a new tab)`}
-                className="pop mr-2 mt-3 inline-flex items-center gap-2 rounded-full border-2 border-accent2 px-3 py-1 text-sm font-bold text-accent2 hover:bg-accent2 hover:text-[var(--btn-text)]"
+      <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
+        {shown.map((p, i) => (
+          <div key={p.title} className="cart">
+            <div className={`cart-edge ${p.featured ? "feat" : ""}`}>
+              <div
+                className={`cart-body flex flex-col ${p.media ? "cursor-pointer" : ""}`}
+                onClick={p.media ? () => setViewing(p.media!) : undefined}
               >
-                <span aria-hidden="true">🎮</span> Play on itch.io
-              </a>
-            )}
-            {p.repo && (
-              <a
-                href={p.repo}
-                target="_blank"
-                rel="noreferrer"
-                onClick={(e) => e.stopPropagation()}
-                aria-label={`${p.title} source code on GitHub (opens in a new tab)`}
-                className="pop mt-3 inline-flex items-center gap-2 rounded-full border-2 border-accent px-3 py-1 text-sm font-bold text-accent hover:bg-accent hover:text-on-accent"
-              >
-                <span aria-hidden="true">{"</>"}</span> View on GitHub
-              </a>
-            )}
-          </Tilt>
+                <div className="cart-label flex items-center justify-between px-4 pb-2 pt-4 font-mono text-xs font-bold uppercase tracking-wider">
+                  <span>No. {String(i + 1).padStart(2, "0")}</span>
+                  <span className="text-accent2">{p.featured ? "★ " : ""}{p.category}</span>
+                </div>
+                <div className="px-4 pb-5 pt-3">
+                  <h3 className="font-display text-xl font-extrabold">{p.title}</h3>
+                  <p className="mt-1 text-sm font-semibold text-accent">{p.stack}</p>
+                  <p className="mt-3 text-sm text-muted">{p.summary}</p>
+                  <ul className="mt-4 flex flex-wrap gap-1.5">
+                    {p.tags.map((t) => <li key={t} className="tag">{t}</li>)}
+                  </ul>
+                  {p.media && <MediaButton media={p.media} onOpen={setViewing} />}
+                  {p.play && (
+                    <a
+                      href={p.play}
+                      target="_blank"
+                      rel="noreferrer"
+                      onClick={(e) => e.stopPropagation()}
+                      aria-label={`Play ${p.title} on itch.io (opens in a new tab)`}
+                      className="pix-btn mr-2 mt-3"
+                    >
+                      <span aria-hidden="true">🎮</span> Play on itch.io
+                    </a>
+                  )}
+                  {p.repo && (
+                    <a
+                      href={p.repo}
+                      target="_blank"
+                      rel="noreferrer"
+                      onClick={(e) => e.stopPropagation()}
+                      aria-label={`${p.title} source code on GitHub (opens in a new tab)`}
+                      className="pix-btn mt-3"
+                    >
+                      <span aria-hidden="true">{"</>"}</span> GitHub
+                    </a>
+                  )}
+                </div>
+                <div className="cart-pins" aria-hidden="true" />
+              </div>
+            </div>
+          </div>
         ))}
         {shown.length === 0 && <p className="text-muted">No projects match.</p>}
       </div>
@@ -247,50 +253,52 @@ export function Experience() {
   const [viewing, setViewing] = useState<Media | null>(null);
   return (
     <Section id="experience" title="Education & experience" eyebrow="05 / Journey">
-      <ol className="space-y-6 border-l-4 border-accent pl-6">
+      {/* A quest log: checkpoints on a dashed rail, plain text, no boxes. */}
+      <ol className="ml-4 space-y-9 border-l-[3px] border-dashed border-accent pl-9">
         {timeline.map((t, i) => (
           <li key={t.title} className="relative">
-            <span
-              className={`absolute -left-[38px] top-5 h-5 w-5 rounded-full border-4 border-bg ${
-                ["bg-accent", "bg-accent2"][i % 2]
-              }`}
-            />
-            <Tilt
-              className="rounded-2xl border-2 border-line bg-surface p-5"
-              max={6}
-              onClick={t.media ? () => setViewing(t.media!) : undefined}
-            >
-              <p className="pop text-sm font-semibold text-muted">{t.period} · {t.type}</p>
-              <h3 className="pop text-xl font-extrabold">{t.title}</h3>
-              <p className="pop font-semibold text-accent">{t.place}</p>
+            <span className={`quest-node ${i % 2 ? "bg-accent2" : "bg-accent3"}`} aria-hidden="true" />
+            <div className={t.media ? "cursor-pointer" : ""} onClick={t.media ? () => setViewing(t.media!) : undefined}>
+              <p>
+                <span className="stamp">{t.period}</span>
+                <span className="ml-3 font-mono text-xs font-bold uppercase tracking-wider text-muted">
+                  Quest {String(timeline.length - i).padStart(2, "0")} · {t.type}
+                </span>
+              </p>
+              <h3 className="mt-3 font-display text-2xl font-extrabold">{t.title}</h3>
+              <p className="font-semibold text-accent">{t.place}</p>
               <p className="mt-2 max-w-3xl text-sm text-muted">{t.detail}</p>
               {t.media && <MediaButton media={t.media} onOpen={setViewing} />}
-            </Tilt>
+            </div>
           </li>
         ))}
       </ol>
 
-      <div className="mt-14 grid gap-8 lg:grid-cols-2">
+      <div className="mt-16 grid gap-10 lg:grid-cols-2">
         <div>
-          <h3 className="mb-4 text-2xl font-extrabold text-accent">Certificates</h3>
-          <ul className="space-y-3">
+          <h3 className="mb-3 font-display text-2xl font-extrabold text-accent">Certificates</h3>
+          <ul>
             {certificates.map((c) => (
-              <li key={c.title}>
-                <Tilt className="rounded-xl border-2 border-line bg-surface px-4 py-3" max={8}>
-                  <p className="pop font-bold">{c.title}</p>
-                  <p className="text-sm text-muted">{c.issuer}</p>
-                </Tilt>
+              <li key={c.title} className="flex items-start gap-3 border-b-2 border-dotted border-line py-3">
+                <span className="mt-0.5 grid h-8 w-8 flex-none place-items-center rounded-full bg-accent3 font-bold text-[#1a1a1a]" aria-hidden="true">✦</span>
+                <span>
+                  <span className="block font-bold">{c.title}</span>
+                  <span className="block text-sm text-muted">{c.issuer}</span>
+                </span>
               </li>
             ))}
           </ul>
         </div>
         <div>
-          <h3 className="mb-4 text-2xl font-extrabold text-accent">Community & activities</h3>
-          <Tilt className="rounded-2xl border-2 border-line bg-surface p-5" max={5}>
-            <ul className="list-disc space-y-2 pl-5 text-sm text-muted">
-              {community.map((c) => <li key={c}>{c}</li>)}
-            </ul>
-          </Tilt>
+          <h3 className="mb-3 font-display text-2xl font-extrabold text-accent">Community & activities</h3>
+          <ul className="space-y-3 text-sm text-muted">
+            {community.map((c) => (
+              <li key={c} className="flex gap-3 border-b-2 border-dotted border-line pb-3">
+                <span className="font-bold text-accent2" aria-hidden="true">▸</span>
+                {c}
+              </li>
+            ))}
+          </ul>
         </div>
       </div>
       <MediaModal media={viewing} onClose={() => setViewing(null)} />
@@ -305,10 +313,14 @@ export function Contact() {
         Have a question or a project in mind? Send a message below, or email me at{" "}
         <a className="font-semibold text-accent underline" href={`mailto:${profile.email}`}>{profile.email}</a>.
       </p>
-      <Tilt className="max-w-xl rounded-3xl border-2 border-accent bg-surface p-6" max={4}>
-        <ContactForm />
-      </Tilt>
-      <p className="mt-8 flex flex-wrap gap-4">
+      <div className="cart max-w-xl">
+        <div className="cart-edge feat">
+          <div className="cart-body p-6 pt-8">
+            <ContactForm />
+          </div>
+        </div>
+      </div>
+      <p className="mt-10 flex flex-wrap gap-4">
         <a className="btn-ghost-3d" href={profile.github} target="_blank" rel="noreferrer">GitHub</a>
         <a className="btn-ghost-3d" href={profile.linkedin} target="_blank" rel="noreferrer">LinkedIn</a>
         <a className="btn-ghost-3d" href={profile.itch} target="_blank" rel="noreferrer">itch.io</a>

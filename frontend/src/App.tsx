@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import Navbar from "./components/Navbar";
-import Hero from "./components/Hero";
+import Hero, { MoveChips } from "./components/Hero";
 import Marquee from "./components/Marquee";
 import VideoSection from "./components/VideoSection";
 import ChatWidget from "./components/ChatWidget";
@@ -31,7 +31,13 @@ export default function App() {
       <Navbar />
       <main id="main">
         <Hero />
-        <Marquee />
+        {/* Phones: the move chips sit right under the avatar, and the technologies strip lives in the hero text instead. */}
+        <div className="relative z-10 px-4 pb-8 pt-3 md:hidden">
+          <MoveChips className="justify-center" />
+        </div>
+        <div className="hidden md:block">
+          <Marquee />
+        </div>
         <About />
         <VideoSection />
         <Skills />
