@@ -123,35 +123,52 @@ export default function ChatWidget() {
   };
 
   // Words appear in the box while she speaks; when she stops, the question is sent.
+  // Phones often cut the first attempt off before the person starts talking (the permission prompt, the keyboard,
+  // the beep), so a silent first attempt is retried once on its own.
   function toggleMic() {
     if (!SpeechRecognitionImpl) return;
     if (listening) {
       rec.current?.stop();
       return;
     }
-    const r = new SpeechRecognitionImpl();
-    let heard = "";
-    r.lang = lang.speech;
-    r.interimResults = true;
-    r.continuous = false;
-    r.onresult = (e) => {
-      heard = Array.from(e.results).map((res) => res[0].transcript).join("").trim();
-      setInput(heard);
-    };
-    r.onerror = (e) => setMicNote(MIC_ERRORS[e.error] ?? "Voice typing stopped. Please try again.");
-    r.onend = () => {
-      setListening(false);
-      if (heard) void send(heard);
-    };
-    rec.current = r;
+    inputRef.current?.blur(); // close the on-screen keyboard so it doesn't compete for the microphone
     setMicNote("");
     setInput("");
     setListening(true);
-    try {
-      r.start();
-    } catch {
-      setListening(false);
-    }
+
+    const attempt = (retriesLeft: number) => {
+      const r = new SpeechRecognitionImpl();
+      let heard = "";
+      let failed = "";
+      r.lang = lang.speech;
+      r.interimResults = true;
+      r.continuous = false;
+      r.onresult = (e) => {
+        heard = Array.from(e.results).map((res) => res[0].transcript).join("").trim();
+        setInput(heard);
+      };
+      r.onerror = (e) => {
+        failed = e.error;
+      };
+      r.onend = () => {
+        if (!heard && (failed === "no-speech" || failed === "") && retriesLeft > 0) {
+          attempt(retriesLeft - 1);
+          return;
+        }
+        setListening(false);
+        if (heard) void send(heard);
+        else if (failed) setMicNote(MIC_ERRORS[failed] ?? "Voice typing stopped. Please try again.");
+        else setMicNote("I didn't catch that. Tap Mic, wait for \"Listening\", then speak.");
+      };
+      rec.current = r;
+      try {
+        r.start();
+      } catch {
+        setListening(false);
+        setMicNote("Voice typing couldn't start. Please try again.");
+      }
+    };
+    attempt(1);
   }
 
   const onSubmit = (e: FormEvent) => {
