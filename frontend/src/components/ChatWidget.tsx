@@ -31,9 +31,10 @@ const GREETING: Msg = {
 interface Recognition {
   lang: string;
   interimResults: boolean;
-  onresult: ((e: { results: ArrayLike<ArrayLike<{ transcript: string }>> }) => void) | null;
+  continuous: boolean;
+  onresult: ((e: { results: ArrayLike<ArrayLike<{ transcript: string }> & { isFinal: boolean }> }) => void) | null;
   onend: (() => void) | null;
-  onerror: (() => void) | null;
+  onerror: ((e: { error: string }) => void) | null;
   start(): void;
   stop(): void;
 }
@@ -53,6 +54,7 @@ export default function ChatWidget() {
   const [busy, setBusy] = useState(false);
   const [lang, setLang] = useState<(typeof LANGUAGES)[number]>(LANGUAGES[0]);
   const [listening, setListening] = useState(false);
+  const [micNote, setMicNote] = useState("");
   const [readAloud, setReadAloud] = useState(false);
   const bottom = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -110,6 +112,17 @@ export default function ChatWidget() {
     }
   }
 
+  // Why the browser refused to listen, in words a visitor can act on.
+  const MIC_ERRORS: Record<string, string> = {
+    "not-allowed": "The microphone is blocked. Allow it for this site in your browser settings, then try again.",
+    "service-not-allowed": "The microphone is blocked. Allow it for this site in your browser settings, then try again.",
+    "no-speech": "I didn't hear anything. Tap Mic and try again.",
+    "audio-capture": "No microphone was found.",
+    network: "Voice typing needs an internet connection.",
+    "language-not-supported": "This browser can't do voice typing in that language.",
+  };
+
+  // Words appear in the box while she speaks; when she stops, the question is sent.
   function toggleMic() {
     if (!SpeechRecognitionImpl) return;
     if (listening) {
@@ -117,17 +130,28 @@ export default function ChatWidget() {
       return;
     }
     const r = new SpeechRecognitionImpl();
+    let heard = "";
     r.lang = lang.speech;
-    r.interimResults = false;
+    r.interimResults = true;
+    r.continuous = false;
     r.onresult = (e) => {
-      const heard = e.results[0]?.[0]?.transcript;
+      heard = Array.from(e.results).map((res) => res[0].transcript).join("").trim();
+      setInput(heard);
+    };
+    r.onerror = (e) => setMicNote(MIC_ERRORS[e.error] ?? "Voice typing stopped. Please try again.");
+    r.onend = () => {
+      setListening(false);
       if (heard) void send(heard);
     };
-    r.onend = () => setListening(false);
-    r.onerror = () => setListening(false);
     rec.current = r;
+    setMicNote("");
+    setInput("");
     setListening(true);
-    r.start();
+    try {
+      r.start();
+    } catch {
+      setListening(false);
+    }
   }
 
   const onSubmit = (e: FormEvent) => {
@@ -229,7 +253,7 @@ export default function ChatWidget() {
               value={input}
               onChange={(e) => setInput(e.target.value)}
               maxLength={1000}
-              placeholder={listening ? "Listening…" : "Ask a question…"}
+              placeholder={listening ? "Listening… speak now" : "Ask a question…"}
               aria-label="Your question"
               className="min-w-0 flex-1 rounded-lg border border-line bg-bg px-3 py-2 text-sm"
             />
@@ -252,6 +276,7 @@ export default function ChatWidget() {
               Send
             </button>
           </form>
+          {micNote && <p role="status" className="border-t border-line px-3 py-2 text-xs text-muted">{micNote}</p>}
         </section>
       )}
       <button

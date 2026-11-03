@@ -1,5 +1,8 @@
-// Privacy-friendly analytics (Plausible, or a self-hosted compatible script such as Umami).
-// Does nothing unless VITE_PLAUSIBLE_DOMAIN is set, so local development sends no data.
+import { inject } from "@vercel/analytics";
+
+// Page views come from Vercel Web Analytics (free, no cookies); it only reports once enabled in the Vercel project.
+// Custom events (chat questions) also go to Plausible, or a self-hosted compatible script such as Umami, when
+// VITE_PLAUSIBLE_DOMAIN is set. Local development sends nothing.
 declare global {
   interface Window {
     plausible?: (event: string, opts?: { props?: Record<string, string> }) => void;
@@ -7,6 +10,7 @@ declare global {
 }
 
 export function initAnalytics() {
+  inject();
   const domain = import.meta.env.VITE_PLAUSIBLE_DOMAIN as string | undefined;
   if (!domain) return;
   const s = document.createElement("script");
