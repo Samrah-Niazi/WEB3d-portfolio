@@ -1,3 +1,4 @@
+import "dotenv/config";
 import { buildIndex } from "./store.js";
 
 const built = await buildIndex();

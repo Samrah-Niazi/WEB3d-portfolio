@@ -1,7 +1,6 @@
-export const EMBED_MODEL = process.env.EMBED_MODEL ?? "Xenova/all-MiniLM-L6-v2";
-
-// The same MiniLM weights, served by Hugging Face's free Inference API, for hosts too small to run the model themselves.
-const REMOTE_URL = "https://router.huggingface.co/hf-inference/models/sentence-transformers/all-MiniLM-L6-v2/pipeline/feature-extraction";
+// Hosted builds (Vercel) embed through Google's Gemini API free tier; local development falls back to a MiniLM model run in-process.
+const GEMINI_MODEL = "gemini-embedding-001";
+export const EMBED_MODEL = process.env.GEMINI_API_KEY ? GEMINI_MODEL : (process.env.EMBED_MODEL ?? "Xenova/all-MiniLM-L6-v2");
 
 type Extractor = (
   input: string[],
@@ -17,27 +16,38 @@ function load(): Promise<Extractor> {
   return extractor;
 }
 
+// "passage" is for the documents stored in the index, "query" for the visitor's question: Gemini embeds the two differently.
+export type EmbedKind = "passage" | "query";
+
 const normalise = (v: number[]) => {
   const n = Math.hypot(...v) || 1;
   return v.map((x) => x / n);
 };
 
-async function embedRemote(texts: string[]): Promise<number[][]> {
-  const res = await fetch(REMOTE_URL, {
+async function embedRemote(texts: string[], kind: EmbedKind): Promise<number[][]> {
+  const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:batchEmbedContents`, {
     method: "POST",
-    headers: { Authorization: `Bearer ${process.env.HF_TOKEN}`, "Content-Type": "application/json" },
-    body: JSON.stringify({ inputs: texts, options: { wait_for_model: true } }),
+    headers: { "x-goog-api-key": process.env.GEMINI_API_KEY!, "Content-Type": "application/json" },
+    body: JSON.stringify({
+      requests: texts.map((text) => ({
+        model: `models/${GEMINI_MODEL}`,
+        content: { parts: [{ text }] },
+        taskType: kind === "query" ? "RETRIEVAL_QUERY" : "RETRIEVAL_DOCUMENT",
+        outputDimensionality: 768,
+      })),
+    }),
   });
   if (!res.ok) throw new Error(`Embedding service responded ${res.status}`);
-  return ((await res.json()) as number[][]).map(normalise);
+  const body = (await res.json()) as { embeddings: { values: number[] }[] };
+  return body.embeddings.map((e) => normalise(e.values));
 }
 
 // Returns L2-normalised vectors, so cosine similarity is a plain dot product.
-export async function embed(texts: string[]): Promise<number[][]> {
-  if (process.env.HF_TOKEN) return embedRemote(texts);
+export async function embed(texts: string[], kind: EmbedKind = "passage"): Promise<number[][]> {
+  if (process.env.GEMINI_API_KEY) return embedRemote(texts, kind);
   const ex = await load();
   const out = await ex(texts, { pooling: "mean", normalize: true });
   return out.tolist();
 }
 
-export const warmUp = () => (process.env.HF_TOKEN ? Promise.resolve() : load().then(() => undefined));
+export const warmUp = () => (process.env.GEMINI_API_KEY ? Promise.resolve() : load().then(() => undefined));

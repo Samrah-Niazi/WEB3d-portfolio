@@ -45,7 +45,7 @@ export type Hit = { chunk: IndexedChunk; score: number };
 
 export async function search(query: string, k = 4): Promise<Hit[]> {
   const { chunks } = await loadIndex();
-  const [q] = await embed([query]);
+  const [q] = await embed([query], "query");
   return chunks
     .map((chunk) => ({ chunk, score: chunk.embedding.reduce((s, v, i) => s + v * q[i], 0) }))
     .sort((a, b) => b.score - a.score)

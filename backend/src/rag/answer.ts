@@ -7,7 +7,8 @@ export type ChatResult = { answer: string; sources: Source[] };
 
 const MODEL = process.env.CHAT_MODEL ?? "claude-haiku-5-5";
 // Cosine similarity below this means the portfolio has nothing relevant to the question.
-const MIN_SCORE = Number(process.env.MIN_SCORE ?? 0.22);
+// Gemini scores sit higher than the local MiniLM model: related questions land at 0.62+, unrelated ones below 0.6.
+const MIN_SCORE = Number(process.env.MIN_SCORE ?? (process.env.GEMINI_API_KEY ? 0.6 : 0.22));
 
 const NO_INFO =
   "I don't have that information about Samrah. You can ask her directly through the contact form below.";
