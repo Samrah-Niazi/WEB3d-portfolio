@@ -10,8 +10,7 @@ const indexFile = () => path.join(dataDir(), "index.json");
 export type IndexedChunk = Chunk & { embedding: number[] };
 type Index = { model: string; chunks: IndexedChunk[] };
 
-// The hosted build bundles the saved index and hands it over here, so it needs no file access at all.
-let index: Index | null = (globalThis as { __RAG_INDEX__?: Index }).__RAG_INDEX__ ?? null;
+let index: Index | null = null;
 
 export async function buildIndex(): Promise<Index> {
   const files = (await readdir(dataDir())).filter((f) => f.endsWith(".md"));
@@ -30,6 +29,10 @@ export async function buildIndex(): Promise<Index> {
 // Load the saved index, or build it when missing or made with a different embedding model.
 export async function loadIndex(): Promise<Index> {
   if (index) return index;
+  // The hosted build bundles the saved index and hands it over on globalThis, so it needs no file access at all.
+  // Read it here, not at import time: the bundle sets it only after this module has been loaded.
+  const bundled = (globalThis as { __RAG_INDEX__?: Index }).__RAG_INDEX__;
+  if (bundled) return (index = bundled);
   try {
     await access(indexFile());
     const saved = JSON.parse(await readFile(indexFile(), "utf8")) as Index;

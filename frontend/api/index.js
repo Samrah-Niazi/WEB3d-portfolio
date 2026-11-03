@@ -76380,7 +76380,7 @@ async function embed(texts) {
 // src/rag/store.ts
 var dataDir = () => import_node_path.default.resolve(import_node_path.default.dirname((0, import_node_url.fileURLToPath)(__importMetaUrl)), "../../data");
 var indexFile = () => import_node_path.default.join(dataDir(), "index.json");
-var index = globalThis.__RAG_INDEX__ ?? null;
+var index = null;
 async function buildIndex() {
   const files = (await (0, import_promises.readdir)(dataDir())).filter((f) => f.endsWith(".md"));
   const chunks = [];
@@ -76395,6 +76395,8 @@ async function buildIndex() {
 }
 async function loadIndex() {
   if (index) return index;
+  const bundled = globalThis.__RAG_INDEX__;
+  if (bundled) return index = bundled;
   try {
     await (0, import_promises.access)(indexFile());
     const saved = JSON.parse(await (0, import_promises.readFile)(indexFile(), "utf8"));
