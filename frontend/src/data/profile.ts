@@ -216,9 +216,9 @@ export const timeline = [
   {
     period: "Jun – Aug 2026",
     type: "Experience",
-    title: "Independent Project (Team)",
-    place: "Multiplayer online game",
-    detail: "Engineered the backend with Node.js and Laravel to support real-time multiplayer gameplay.",
+    title: "Game & Backend Developer",
+    place: "Self-employed (independent)",
+    detail: "Built a real-time multiplayer Ludo game in Unity, plus the Laravel admin panel and the Node.js backend (with load balancing) that runs it.",
   },
   {
     period: "Oct 2025 – Jan 2026",

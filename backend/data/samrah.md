@@ -18,9 +18,9 @@ Samrah worked as a Game Developer Intern at Game Storm Studios from 16 June 2026
 @section experience
 Samrah was a Teaching Assistant for Object-Oriented Programming at NED University, Department of CSIT, from October 2025 to January 2026. She delivered OOP lectures and academic support, mentoring students on debugging, design decisions, and core programming concepts.
 
-## Experience: Independent multiplayer game project
+## Experience: Game and backend developer (self-employed)
 @section experience
-From June to August 2026 Samrah worked with a team on an independent project: a multiplayer online game. She engineered the backend with Node.js and Laravel to support real-time multiplayer gameplay.
+From June to August 2026 Samrah worked independently as a self-employed game and backend developer. She built a real-time multiplayer Ludo game in Unity, plus the Laravel admin panel and the Node.js backend (with load balancing) that runs it.
 
 ## Research: TALEEM360 final year design project
 @section projects
