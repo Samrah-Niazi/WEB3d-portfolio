@@ -144,9 +144,9 @@ export function Projects() {
             aria-label={`${a.title}: view on LinkedIn (opens in a new tab)`}
             className="ticket"
           >
-            <span className="ticket-stub" aria-hidden="true">★</span>
+            <span className="ticket-stub" aria-hidden="true"><span className="star">★</span><span className="vert">Unlocked</span></span>
             <span className="block p-4">
-              <span className="font-mono text-xs font-bold uppercase tracking-wider text-accent2">Achievement unlocked</span>
+              <span className="font-mono text-xs font-bold uppercase tracking-wider text-accent2">Achievement</span>
               <span className="mt-1 block font-display text-xl font-extrabold">{a.title}</span>
               <span className="block text-sm text-muted">{a.detail}</span>
               <span className="mt-2 block text-sm font-bold text-accent underline">View on LinkedIn ↗</span>
