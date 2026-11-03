@@ -89573,7 +89573,8 @@ app.post("/api/chat", chatLimiter, async (req, res) => {
     res.json(await answer(parsed.data.messages, parsed.data.lang));
   } catch (err) {
     console.error("chat failed:", err);
-    res.status(502).json({ error: "The assistant is unavailable right now. Please try again." });
+    const detail = err instanceof Error ? err.message.slice(0, 140) : void 0;
+    res.status(502).json({ error: "The assistant is unavailable right now. Please try again.", detail });
   }
 });
 var contactLimiter = rate_limit_default({

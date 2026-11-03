@@ -42,7 +42,9 @@ app.post("/api/chat", chatLimiter, async (req, res) => {
     res.json(await answer(parsed.data.messages, parsed.data.lang));
   } catch (err) {
     console.error("chat failed:", err);
-    res.status(502).json({ error: "The assistant is unavailable right now. Please try again." });
+    // The step that failed (e.g. "Embedding service responded 401") helps tell a bad key from an outage; it holds no secrets.
+    const detail = err instanceof Error ? err.message.slice(0, 140) : undefined;
+    res.status(502).json({ error: "The assistant is unavailable right now. Please try again.", detail });
   }
 });
 
