@@ -35,6 +35,9 @@ interface Recognition {
   onresult: ((e: { results: ArrayLike<ArrayLike<{ transcript: string }> & { isFinal: boolean }> }) => void) | null;
   onend: (() => void) | null;
   onerror: ((e: { error: string }) => void) | null;
+  onaudiostart: (() => void) | null;
+  onsoundstart: (() => void) | null;
+  onspeechstart: (() => void) | null;
   start(): void;
   stop(): void;
 }
@@ -140,6 +143,7 @@ export default function ChatWidget() {
       const r = new SpeechRecognitionImpl();
       let heard = "";
       let failed = "";
+      const seen = { audio: false, sound: false, speech: false }; // how far the browser got, shown if nothing was heard
       r.lang = lang.speech;
       r.interimResults = true;
       r.continuous = false;
@@ -147,6 +151,9 @@ export default function ChatWidget() {
         heard = Array.from(e.results).map((res) => res[0].transcript).join("").trim();
         setInput(heard);
       };
+      r.onaudiostart = () => { seen.audio = true; };
+      r.onsoundstart = () => { seen.sound = true; };
+      r.onspeechstart = () => { seen.speech = true; };
       r.onerror = (e) => {
         failed = e.error;
       };
@@ -156,9 +163,10 @@ export default function ChatWidget() {
           return;
         }
         setListening(false);
+        const trace = ` (mic opened: ${seen.audio ? "yes" : "no"}, sound: ${seen.sound ? "yes" : "no"}, speech: ${seen.speech ? "yes" : "no"}${failed ? `, ${failed}` : ""})`;
         if (heard) void send(heard);
-        else if (failed) setMicNote(MIC_ERRORS[failed] ?? "Voice typing stopped. Please try again.");
-        else setMicNote("I didn't catch that. Tap Mic, wait for \"Listening\", then speak.");
+        else if (failed) setMicNote((MIC_ERRORS[failed] ?? "Voice typing stopped. Please try again.") + trace);
+        else setMicNote("I didn't catch that. Tap Mic, wait for \"Listening\", then speak." + trace);
       };
       rec.current = r;
       try {
