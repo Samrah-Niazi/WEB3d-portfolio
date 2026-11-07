@@ -1,0 +1,12 @@
+Adobe After Effects v22.6 Windows 64 render log for project “samrah_promo.aep”
+
+Rendering started on 11/7/2026 at 7:44:32 PM
+
+  11/7/2026 7:44:33 PM: Starting composition “Samrah Promo”.
+
+  Render Settings: Best Settings  Quality: Best  Resolution: Full  Size: 1920 x 1080  Proxy Use: Use No Proxies  Effects: Current Settings  Disk Cache: Read Only  Color Depth: Current Settings  Frame Blending: On for Checked Layers  Field Render: Off  Pulldown: Off  Motion Blur: On for Checked Layers  Solos: Current Settings  Time Span: Custom  Start: 0:00:03:00  End: 0:00:03:02  Duration: 0:00:00:03  Frame Rate: 30.00 (comp)  Guide Layers: All Off  Skip Existing Files: Off    Output Module: High Quality  Output To: C:\Users\TECHNO~1\AppData\Local\Temp\claude\07f071ebaffb7fba\64ea1ea7-b635-434f-a8d0-d36dfcfa8cbb\scratchpad\frames_test\t_High_Quality.mov  Format: QuickTime  Output Info: Apple ProRes 422  Include: Project Link  Output Audio: On (if comp has audio)  Channels: RGB  Depth: Millions of Colors  Color: Premultiplied  Resize: -  Crop: -  Final Size: 1920 x 1080  Profile: -  Post-Render Action: None    0:00:03:00 (1): 0 Seconds  0:00:03:01 (2): 0 Seconds  0:00:03:02 (3): 0 Seconds  11/7/2026 7:44:34 PM: Finished composition “Samrah Promo”.
+
+
+  Total Time Elapsed: 2 Seconds
+Log closed on 11/7/2026 at 7:44:34 PM
+

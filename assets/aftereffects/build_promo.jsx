@@ -20,6 +20,15 @@
 
     app.beginUndoGroup("Build Samrah promo");
     var proj = app.project;
+    // clear out a previous run of this script (its comps and the footage it imported)
+    for (var oi = proj.numItems; oi >= 1; oi--) {
+        var old = proj.item(oi);
+        try {
+            if (old instanceof CompItem && old.name.indexOf("Samrah Promo") === 0) old.remove();
+            else if (old instanceof FootageItem && old.mainSource && old.mainSource.file &&
+                     String(old.mainSource.file.fsName).indexOf("aftereffects") >= 0) old.remove();
+        } catch (eOld) {}
+    }
     var comp = proj.items.addComp("Samrah Promo", W, H, 1, DUR, FPS);
     comp.bgColor = C.bg1;
 
@@ -204,15 +213,15 @@
     }
 
     // ---------------------------------------------------------------- scene 1: intro (0-6)
-    var s1 = text("HELLO, I'M", 54, C.pink, 760, 380, 0, 6, { tracking: 320 });
+    var s1 = text("HELLO, I'M", 54, C.pink, 700, 390, 0, 6, { tracking: 320 });
     fadeIn(s1, 0.3, 0.5); fadeOut(s1, 6);
-    var n1 = text("SAMRAH", 200, C.white, 760, 570, 0, 6);
+    var n1 = text("SAMRAH", 180, C.white, 700, 570, 0, 6);
     popIn(n1, 0.7); fadeOut(n1, 6); glow(n1);
-    var n2 = text("NIAZI", 200, C.yellow, 760, 770, 0, 6);
+    var n2 = text("NIAZI", 180, C.yellow, 700, 750, 0, 6);
     popIn(n2, 1.0); fadeOut(n2, 6); glow(n2);
-    var sub = text("GAME DEVELOPER   \u2022   AR/VR   \u2022   UNITY & UNREAL", 42, C.teal, 760, 900, 0, 6, { tracking: 60 });
+    var sub = text("GAME DEVELOPER   \u2022   AR/VR   \u2022   UNITY & UNREAL", 38, C.teal, 700, 890, 0, 6, { tracking: 40 });
     slideIn(sub, 1.9, 0, 40); fadeOut(sub, 6);
-    avatar("wave", 880, 1530, 560, 0.4, 6);
+    avatar("wave", 880, 1580, 560, 0.4, 6);
 
     // ---------------------------------------------------------------- scene 2: about (6-14)
     header("ABOUT ME", 6, 14);
@@ -222,9 +231,9 @@
     slideIn(a2, 7.3, -120, 0); fadeOut(a2, 14);
     var a3 = text("I build games that feel alive.", 70, C.yellow, 140, 720, 6, 14, { left: true });
     slideIn(a3, 8.3, -120, 0); fadeOut(a3, 14); glow(a3);
-    var pill = rect(1040, 110, C.pink, 660, 900, 6, 14, 55, "Intern pill");
+    var pill = rect(1100, 110, C.pink, 690, 900, 6, 14, 55, "Intern pill");
     popIn(pill, 9.6); fadeOut(pill, 14);
-    var pillT = text("Game Developer Intern  @  Game Storm Studios", 44, C.ink, 660, 915, 6, 14);
+    var pillT = text("Game Developer Intern  @  Game Storm Studios", 40, C.ink, 690, 914, 6, 14);
     popIn(pillT, 9.7); fadeOut(pillT, 14);
     avatar("think", 860, 1600, 570, 6, 14);
 
@@ -267,14 +276,14 @@
     var colors = [C.pink, C.yellow, C.teal];
     for (var s = 0; s < skills.length; s++) {
         var col = s % 4, row = Math.floor(s / 4);
-        var sx = 285 + col * 345, sy = 400 + row * 150;
+        var sx = 265 + col * 335, sy = 400 + row * 150;
         var st = 26.6 + s * 0.2;
-        var pl = rect(330, 100, colors[s % 3], sx, sy, st, 33, 50, "Skill pill " + (s + 1));
+        var pl = rect(320, 100, colors[s % 3], sx, sy, st, 33, 50, "Skill pill " + (s + 1));
         popIn(pl, st); fadeOut(pl, 33);
         var pt = text(skills[s], 38, C.ink, sx, sy + 14, st, 33);
         popIn(pt, st + 0.05); fadeOut(pt, 33);
     }
-    avatar("play", 800, 1700, 590, 26, 33);
+    avatar("play", 740, 1740, 600, 26, 33);
 
     // ---------------------------------------------------------------- scene 5: achievements (33-39)
     header("ACHIEVEMENTS", 33, 39);
@@ -298,15 +307,15 @@
     avatar("cheer", 900, 1640, 580, 33, 39);
 
     // ---------------------------------------------------------------- scene 6: call to action (39-45)
-    var c1 = text("LET'S BUILD", 160, C.white, 760, 400, 39, 45);
+    var c1 = text("LET'S BUILD", 120, C.white, 660, 410, 39, 45);
     popIn(c1, 39.4); glow(c1);
-    var c2 = text("SOMETHING FUN", 160, C.yellow, 760, 570, 39, 45);
+    var c2 = text("SOMETHING FUN", 120, C.yellow, 660, 560, 39, 45);
     popIn(c2, 39.8); glow(c2);
-    var c3 = text("web-3d-portfolio-five.vercel.app", 54, C.teal, 760, 760, 39, 45, { tracking: 20 });
+    var c3 = text("web-3d-portfolio-five.vercel.app", 54, C.teal, 660, 760, 39, 45, { tracking: 20 });
     slideIn(c3, 40.6, 0, 50);
-    var c4t = text("samrahniazi677@gmail.com", 44, C.white, 760, 850, 39, 45, { font: "ArialMT" });
+    var c4t = text("samrahniazi677@gmail.com", 44, C.white, 660, 850, 39, 45, { font: "ArialMT" });
     slideIn(c4t, 41.0, 0, 50);
-    avatar("wave", 880, 1560, 570, 39, 45);
+    avatar("wave", 860, 1610, 580, 39, 45);
 
     // ---------------------------------------------------------------- scene wipes, progress bar, fade out
     var cuts = [6, 14, 26, 33, 39];
