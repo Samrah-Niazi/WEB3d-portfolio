@@ -11,9 +11,11 @@ Design reference: assets/reference/profile-reference-2.jpg (face, hair, colors)
 Units are meters. The character faces -Y (becomes +Z in glTF) and is ~1.95 m tall.
 Every mesh is skinned rigidly to one bone, so the model stays light and animates cleanly in three.js.
 
-Rig (22 bones): root > hips > spine > chest > neck > head (+ eye.L/R, brow.L/R);
-chest > shoulder.L/R > upperarm > forearm > hand; hips > skirt.
-Animations: Idle (loop), Wave, Nod, Cheer, Twirl, Think, Play (she pulls out a handheld console and plays).
+Rig (24 bones): root > hips > spine > chest > neck > head (+ eye.L/R, brow.L/R);
+chest > shoulder.L/R > upperarm > forearm > hand; hips > skirt; root > desk (flat desk, chair and Dell laptop).
+Animations: Idle (loop: she sits behind a Dell laptop, peeks over the lid and waves hi), Hi (the same hello, once),
+then the standing clips Wave, Nod, Cheer, Twirl, Think, Play (she pulls out a handheld console and plays).
+The desk is only visible in Idle and Hi; every other clip hides it (the "desk" bone is scaled away).
 """
 import math
 import os
@@ -114,6 +116,17 @@ CON_DARK = make_mat("ConsoleDark", "#23263a", 0.4)
 CON_TEAL = make_mat("ConsoleTeal", "#2ed3c6", 0.3)
 CON_PINK = make_mat("ConsolePink", "#ff4f8b", 0.3)
 CON_SCREEN = make_mat("ConsoleScreen", "#8fe3ff", 0.15)
+DESK_WOOD = make_mat("DeskWood", "#c99a6b", 0.55)
+DESK_TOP = make_mat("DeskTopWood", "#e3c196", 0.45)
+DESK_DRAWER = make_mat("DeskDrawer", "#b6865c", 0.55)
+DESK_MUG = make_mat("DeskMug", "#2ed3c6", 0.3)
+DESK_POT = make_mat("DeskPot", "#d96c4f", 0.6)
+DESK_LEAF = make_mat("DeskLeaf", "#3fa85a", 0.6)
+DESK_LID = make_mat("DeskLaptopSilver", "#c9ccd3", 0.35, 0.65)
+DESK_BASE = make_mat("DeskLaptopBase", "#8d929d", 0.4, 0.6)
+DESK_DARK = make_mat("DeskLaptopDark", "#2b2e36", 0.4)
+DESK_SCREEN = make_mat("DeskLaptopScreen", "#10213a", 0.2)
+DESK_CHAIR = make_mat("DeskChair", "#4b4f63", 0.6)
 
 
 # ---------------------------------------------------------------- geometry helpers
@@ -440,11 +453,11 @@ add(torus("Belt", (0, 0, 1.075), 0.146, 0.012, BELT, ms=48, ns=8, squash_y=0.68)
 add(ellipsoid("Buckle", (0, -0.100, 1.075), (0.017, 0.006, 0.015), GOLD, 16, 8), "chest")
 for side, sx in (("L", 1), ("R", -1)):  # cute pink heels with ankle straps, visible below the hem
     x = sx * 0.092
-    add(tube(f"Ankle.{side}", [(x, 0.050, 0.095), (x, 0.045, 0.175)], [(0.030, 0.030), (0.026, 0.026)], SKIN, seg=14), "hips")
+    add(tube(f"Ankle.{side}", [(x, 0.050, 0.095), (x, 0.045, 0.175)], [(0.030, 0.030), (0.026, 0.026)], SKIN, seg=14), "feet")
     add(tube(f"Heel.{side}", [(x, 0.072, 0.095), (x, 0.0, 0.082), (x, -0.095, 0.060), (x, -0.205, 0.030)],
-             [(0.040, 0.030), (0.046, 0.034), (0.044, 0.030), (0.030, 0.020)], HEEL, seg=16), "hips")
-    add(tube(f"HeelPost.{side}", [(x, 0.072, 0.0), (x, 0.072, 0.085)], [(0.013, 0.013), (0.021, 0.021)], HEEL_DARK, seg=10), "hips")
-    add(torus(f"AnkleStrap.{side}", (x, 0.048, 0.125), 0.032, 0.0055, HEEL_DARK, ms=20, ns=6), "hips")
+             [(0.040, 0.030), (0.046, 0.034), (0.044, 0.030), (0.030, 0.020)], HEEL, seg=16), "feet")
+    add(tube(f"HeelPost.{side}", [(x, 0.072, 0.0), (x, 0.072, 0.085)], [(0.013, 0.013), (0.021, 0.021)], HEEL_DARK, seg=10), "feet")
+    add(torus(f"AnkleStrap.{side}", (x, 0.048, 0.125), 0.032, 0.0055, HEEL_DARK, ms=20, ns=6), "feet")
 
 # arms: long knit sleeves, ribbed cuffs, skin hands (slight A-pose)
 for side, sx in (("L", 1), ("R", -1)):
@@ -498,6 +511,81 @@ for nm, (bx, by) in {"StickL": (-0.17, -0.02), "StickR": (0.17, 0.035)}.items():
 for i, (bx, by) in enumerate([(0.17, -0.04), (0.145, -0.01), (0.195, -0.01), (0.17, 0.02)]):
     add(tube(f"Btn{i}", [cpos(bx, by, 0.02), cpos(bx, by, 0.03)], [(0.009, 0.009), (0.009, 0.009)], CON_DARK, seg=8), "console")
 
+
+# ---------------------------------------------------------------- desk, chair and Dell laptop (only visible while she sits)
+# She sits at the origin facing -Y. A low desk stands in front of her and a laptop on it, open, with its lid leaning
+# back toward her: from the front you see the back of the lid (with the DELL name), and only her head and one waving
+# hand rise above it. The desk is a solid block so it hides the dress that drops below the tabletop.
+LID_TILT = math.radians(12)
+LID_H = 0.26
+TABLE_Z = 0.64  # height of the tabletop surface
+
+
+def rbox_rot(name, loc, size, material, rot=(0, 0, 0), bevel=0.008):
+    bpy.ops.mesh.primitive_cube_add(size=1, location=loc, rotation=rot)
+    o = bpy.context.active_object
+    o.name = name
+    o.scale = size
+    bpy.ops.object.transform_apply(scale=True)
+    mod = o.modifiers.new("bev", "BEVEL")
+    mod.width = bevel
+    mod.segments = 3
+    bpy.ops.object.modifier_apply(modifier="bev")
+    return finish(o, material)
+
+
+def label_text(text, loc, rot, size, material):
+    curve = bpy.data.curves.new("LabelText", "FONT")
+    curve.body = text
+    curve.size = size
+    curve.extrude = 0.0025
+    curve.align_x = "CENTER"
+    curve.align_y = "CENTER"
+    o = bpy.data.objects.new("LabelText", curve)
+    link(o)
+    o.location = loc
+    o.rotation_euler = rot
+    bpy.ops.object.select_all(action="DESELECT")
+    bpy.context.view_layer.objects.active = o
+    o.select_set(True)
+    bpy.ops.object.convert(target="MESH")
+    return finish(bpy.context.active_object, material)
+
+
+# desk: one flat, thin tabletop on four slim legs, so her dress, heels and chair stay visible underneath
+DW, DD = 1.3, 0.55  # desk width and depth
+TOP_Y = -0.555  # middle of the tabletop, in front of her
+add(rbox_rot("DeskTop", (0, TOP_Y, TABLE_Z - 0.0175), (DW, DD, 0.035), DESK_TOP, bevel=0.01), "desk")
+for sx in (1, -1):
+    for sy in (-1, 1):
+        add(tube(f"DeskLeg{sx}{sy}", [(sx * (DW / 2 - 0.045), TOP_Y + sy * (DD / 2 - 0.045), 0.0),
+                                       (sx * (DW / 2 - 0.045), TOP_Y + sy * (DD / 2 - 0.045), TABLE_Z - 0.035)],
+                 [(0.024, 0.024), (0.02, 0.02)], DESK_DARK, seg=12), "desk")
+
+# a mug and a little plant on the desk, either side of the laptop
+add(tube("Mug", [(0.50, -0.52, TABLE_Z + 0.001), (0.50, -0.52, TABLE_Z + 0.078)], [(0.038, 0.038), (0.040, 0.040)], DESK_MUG, seg=20), "desk")
+add(torus("MugHandle", (0.545, -0.52, TABLE_Z + 0.042), 0.026, 0.0065, DESK_MUG, rot=(math.radians(90), 0, 0), ms=16, ns=6), "desk")
+add(tube("PlantPot", [(-0.50, -0.52, TABLE_Z + 0.001), (-0.50, -0.52, TABLE_Z + 0.058)], [(0.032, 0.032), (0.045, 0.045)], DESK_POT, seg=20), "desk")
+for lx, ly, lz, r in ((-0.50, -0.52, 0.117, (0.04, 0.04, 0.06)), (-0.53, -0.52, 0.087, (0.03, 0.03, 0.05)), (-0.47, -0.52, 0.087, (0.03, 0.03, 0.05))):
+    add(ellipsoid("Leaf", (lx, ly, TABLE_Z + lz), r, DESK_LEAF, 12, 8), "desk")
+
+# chair: seat, backrest, post and a wheel ring (you only see it when you spin her around)
+add(rbox_rot("ChairSeat", (0, 0.10, 0.40), (0.46, 0.36, 0.06), DESK_CHAIR, bevel=0.02), "desk")  # tucked in behind the dress
+add(rbox_rot("ChairBack", (0, 0.30, 0.80), (0.46, 0.06, 0.62), DESK_CHAIR, rot=(math.radians(-8), 0, 0), bevel=0.02), "desk")
+add(tube("ChairPost", [(0, 0.02, 0.06), (0, 0.02, 0.37)], [(0.03, 0.03), (0.03, 0.03)], DESK_DARK, seg=12), "desk")
+add(torus("ChairWheels", (0, 0.02, 0.05), 0.26, 0.02, DESK_DARK, ms=24, ns=6), "desk")
+
+# laptop: base on the desk, lid hinged at the far edge and leaning back toward her
+HINGE = (0, -0.72, TABLE_Z + 0.024)
+c_t, s_t = math.cos(LID_TILT), math.sin(LID_TILT)
+lid_c = (HINGE[0], HINGE[1] + s_t * LID_H / 2, HINGE[2] + c_t * LID_H / 2)
+add(rbox_rot("LaptopBase", (0, -0.55, TABLE_Z + 0.012), (0.58, 0.34, 0.024), DESK_BASE, bevel=0.008), "desk")
+add(rbox_rot("LaptopLid", lid_c, (0.58, 0.018, LID_H), DESK_LID, rot=(-LID_TILT, 0, 0), bevel=0.008), "desk")
+screen_c = (lid_c[0], lid_c[1] + c_t * 0.0095, lid_c[2] - s_t * 0.0095)  # on the side that faces her
+add(rbox_rot("LaptopScreen", screen_c, (0.53, 0.004, LID_H - 0.04), DESK_SCREEN, rot=(-LID_TILT, 0, 0), bevel=0.003), "desk")
+back_c = (lid_c[0], lid_c[1] - c_t * 0.0098, lid_c[2] + s_t * 0.0098)  # on the outer side, toward the viewer
+add(label_text("DELL", back_c, (math.radians(90) - LID_TILT, 0, 0), 0.07, DESK_DARK), "desk")
+
 # stylize: scale the head and everything on it about the neck so the face reads at hero size
 HEAD_SCALE = 1.22
 PIVOT = Vector((0, 0, 1.52))
@@ -535,11 +623,13 @@ bone("chest", (0, 0, 1.2), (0, 0, 1.42), "spine")
 bone("neck", (0, 0, 1.42), (0, 0, 1.54), "chest")
 bone("head", (0, 0, 1.54), tuple(head_pt((0, 0, 1.88))), "neck")
 bone("skirt", (0, 0, 1.08), (0, 0, 0.5), "hips")  # sways with the body
+bone("feet", (0, 0, 0.0), (0, 0, 0.1), "hips")  # heels and ankles: they follow the hips, except while she sits (they stay on the floor)
 for mb in ("mouth", "smile"):  # scaled about the middle of each mouth so it swaps in place
     pts = [v.co for o, b in parts.items() if b == mb for v in o.data.vertices]
     mid = sum(pts, Vector()) / len(pts)
     bone(mb, tuple(mid), (mid.x, mid.y, mid.z + 0.02), "head")
 bone("console", CON_C, (CON_C[0], CON_C[1], CON_C[2] + 0.1), "chest")  # the handheld, scaled away except in Play
+bone("desk", (0, 0, 0), (0, 0, 0.1), "root")  # desk, chair and laptop, scaled away except in Idle and Hi
 for side, sx in (("L", 1), ("R", -1)):
     # eye and brow bones stand upright: scaling local Y blinks, moving local Y raises
     bone(f"eye.{side}", tuple(head_pt((sx * 0.060, -0.14, C.z))), tuple(head_pt((sx * 0.060, -0.14, C.z + 0.04))), "head")
@@ -587,6 +677,7 @@ def reset_pose():
         pb.location = (0, 0, 0)
         pb.scale = (1, 1, 1)
     pose["console"].scale = (0.001, 0.001, 0.001)  # tucked away unless a clip brings it out
+    pose["desk"].scale = (0.001, 0.001, 0.001)  # the desk only appears in the sitting clips
     pose["smile"].scale = (0.001, 0.001, 0.001)  # the soft mouth is shown until a clip swaps in the smile
 
 
@@ -617,6 +708,7 @@ def push_to_nla(act, name):
     hide, show = (0.001,) * 3, (1.0,) * 3
     for f in (int(act.frame_range[0]), int(act.frame_range[1])):
         smiling = name != "Idle"  # she only smiles while she is doing something
+        key("desk", f, scale=show if name in ("Idle", "Hi") else hide)  # the desk belongs to the sitting clips
         key("mouth", f, scale=hide if smiling else show)
         key("smile", f, scale=show if smiling else hide)
         if name != "Play":
@@ -634,17 +726,58 @@ def series(name, frames, values, kind="rot", axis=2):
         key(name, f, **{kind: vec})
 
 
-# Idle: 5 second loop. Breathing, a head sway, relaxed arms, swaying skirt and scarf, and a blink.
+# Idle: she sits behind her Dell laptop. 6 second loop: she is low behind the lid with only the top of her head showing,
+# pops up to peek over it, waves hi with her right hand, and sinks back down while typing with the other hand.
+# (hips "location Y" is straight up in this rig; the standing hips are at 0, so about -0.44 is a seated height.)
+TYPE_UP, TYPE_FORE = (-0.7, 0.0, 0.0), (-1.3, 0.0, 0.0)  # arms forward onto the keyboard
+HI_UP = (0.0, 0.0, 2.75)  # right arm raised beside her head
+LOW, HIGH = -0.46, -0.40
+SIT_SKIRT = (1.0, 0.6, 1.0)
+
+
+def wave_forearm(frames):
+    """Forearm waves left and right (Z) while the hand is up."""
+    return [(0.0, 0.0, 0.5 if i % 2 else -0.5) for i in range(len(frames))]
+
+
 idle = new_action("Idle")
-F3 = (1, 61, 121)
-series("chest", F3, [(1, 1, 1.0), (1, 1, 1.03), (1, 1, 1.0)], "scale")
-series("head", F3, [(0.0, -0.09, 0.0), (0.0, 0.09, 0.04), (0.0, -0.09, 0.0)], "rot")
-series("upperarm.L", F3, [0.0, -0.06, 0.0])
-series("upperarm.R", F3, [0.0, 0.06, 0.0])
-series("skirt", F3, [-0.03, 0.03, -0.03])
+IDLE_F = (1, 24, 44, 112, 132, 144)
+IDLE_HIPS = [LOW, LOW, HIGH, HIGH, LOW, LOW]
+series("hips", IDLE_F, IDLE_HIPS, "loc", axis=1)
+series("feet", IDLE_F, [-v for v in IDLE_HIPS], "loc", axis=1)  # heels stay on the floor
+series("chest", (1, 72, 144), [(1, 1, 1.0), (1, 1, 1.025), (1, 1, 1.0)], "scale")
+series("upperarm.L", (1, 144), [TYPE_UP, TYPE_UP], "rot")
+series("forearm.L", (1, 12, 24, 36, 48, 60, 72, 84, 96, 108, 120, 132, 144),
+       [(-1.3 + (0.06 if i % 2 else -0.04), 0.0, 0.0) for i in range(13)], "rot")
+series("upperarm.R", (1, 24, 48, 60, 104, 122, 144), [TYPE_UP, TYPE_UP, HI_UP, HI_UP, HI_UP, TYPE_UP, TYPE_UP], "rot")
+WAVE_F = (60, 68, 76, 84, 92, 100)
+series("forearm.R", (1, 24, 48) + WAVE_F + (110, 124, 144),
+       [TYPE_FORE, TYPE_FORE, (0.0, 0.0, 0.0)] + wave_forearm(WAVE_F) + [(0.0, 0.0, 0.0), TYPE_FORE, TYPE_FORE], "rot")
+series("head", (1, 44, 66, 90, 112, 144), [(0.0, 0.0, 0.0), (0.0, 0.0, 0.07), (0.0, 0.0, -0.07), (0.0, 0.0, 0.06), (0.0, 0.0, 0.0), (0.0, 0.0, 0.0)], "rot")
+series("brow.L", (1, 44, 112, 130), [0.0, 0.012, 0.012, 0.0], "loc", axis=1)
+series("brow.R", (1, 44, 112, 130), [0.0, 0.012, 0.012, 0.0], "loc", axis=1)
+series("skirt", (1, 72, 144), [-0.02, 0.02, -0.02])
+series("skirt", (1, 144), [SIT_SKIRT, SIT_SKIRT], "scale")  # the dress gathers up when she sits, so the hem stays above the floor
 for name in ("eye.L", "eye.R"):
-    series(name, (1, 84, 87, 90, 121), [(1, 1, 1), (1, 1, 1), (1, 0.1, 1), (1, 1, 1), (1, 1, 1)], "scale")
+    series(name, (1, 30, 33, 36, 96, 99, 102, 144), [(1, 1, 1), (1, 1, 1), (1, 0.1, 1), (1, 1, 1), (1, 1, 1), (1, 0.1, 1), (1, 1, 1), (1, 1, 1)], "scale")
 push_to_nla(idle, "Idle")
+
+# Hi: the same hello once (used by the "Say hi" button and by clicking her): she pops up, waves, and sinks back.
+hi = new_action("Hi")
+HIF = (1, 12, 62, 76)
+HI_HIPS = [-0.43, -0.36, -0.36, -0.43]
+series("hips", HIF, HI_HIPS, "loc", axis=1)
+series("feet", HIF, [-v for v in HI_HIPS], "loc", axis=1)
+series("upperarm.L", (1, 76), [TYPE_UP, TYPE_UP], "rot")
+series("forearm.L", (1, 76), [TYPE_FORE, TYPE_FORE], "rot")
+series("upperarm.R", HIF, [TYPE_UP, HI_UP, HI_UP, TYPE_UP], "rot")
+HI_W = (20, 27, 34, 41, 48, 55)
+series("forearm.R", (1, 12) + HI_W + (62, 76), [TYPE_FORE, (0.0, 0.0, 0.0)] + wave_forearm(HI_W) + [(0.0, 0.0, 0.0), TYPE_FORE], "rot")
+series("head", (1, 24, 44, 62, 76), [(0.0, 0.0, 0.0), (0.0, 0.0, 0.1), (0.0, 0.0, -0.1), (0.0, 0.0, 0.04), (0.0, 0.0, 0.0)], "rot")
+series("brow.L", (1, 12, 62, 76), [0.0, 0.014, 0.014, 0.0], "loc", axis=1)
+series("brow.R", (1, 12, 62, 76), [0.0, 0.014, 0.014, 0.0], "loc", axis=1)
+series("skirt", (1, 76), [SIT_SKIRT, SIT_SKIRT], "scale")
+push_to_nla(hi, "Hi")
 
 # Wave: raise the right arm out to the side, wave the forearm, lower it again
 wave = new_action("Wave")
@@ -793,4 +926,9 @@ if PREVIEW_DIR:
         print("POSE", hb, [round(v, 3) for v in (arm.matrix_world @ pb.head)], [round(v, 3) for v in (arm.matrix_world @ pb.tail)])
     shot("play_side.png", (5.0, 0, 0.98), rot_z=math.radians(90), action="Play", frame_no=45)
     shot("play_close.png", (0, -2.4, 1.2), lens=60, size=(900, 900), action="Play", frame_no=46)
+    shot("sit_low.png", (0, -5.0, 0.98), action="Idle", frame_no=10)
+    shot("sit_hi.png", (0, -5.0, 0.98), action="Idle", frame_no=76)
+    shot("sit_close.png", (0, -2.8, 1.05), lens=60, size=(900, 900), action="Idle", frame_no=76)
+    shot("sit_side.png", (5.0, 0, 0.98), rot_z=math.radians(90), action="Idle", frame_no=76)
+    shot("sit_back.png", (0, 5.0, 0.98), rot_z=math.radians(180), action="Idle", frame_no=76)
     arm.animation_data.action = None
