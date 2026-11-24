@@ -47,3 +47,24 @@ pink/yellow wipe transitions between scenes.
 ```bash
 "C:\Program Files\Blender Foundation\Blender 5.2\blender.exe" --background --python assets/blender/render_avatar_stills.py -- assets/blender/avatar.blend assets/aftereffects/footage/avatar
 ```
+
+## The dark promo (`promo_dark.mp4`)
+
+A second, darker 48-second promo that mixes two reference styles: misty dark 3D scenes with particle title text, serif
+headings, a skills globe and 3D bars, and a dot-matrix portrait on a wireframe grid with giant type, a white "paper" beat
+and a red neon ending. It is built entirely from code, like the first one.
+
+| File | What it is |
+|---|---|
+| `build_promo_dark.jsx` | The After Effects script. Builds one composition per scene plus the main composition and saves `samrah_promo_dark.aep`. |
+| `make_portrait_assets.py` | Makes the portrait footage (`footage/portrait/cutout.png`, `edges.png`, `dots.png`) from your photo and its cutout mask. |
+| `make_music.py` | Composes the soundtrack (`footage/music_dark.wav`): original, generated from code, so it needs no license. |
+| `render_dark.ps1` | Renders the master with `aerender` and encodes `promo_dark.mp4` with ffmpeg. If After Effects stops with "output module stopped responding" near the end, render in chunks with `-s` and `-e` and join them with ffmpeg. |
+
+Scenes: 0-4 loading screen, 4-12 line art, dots and then the real portrait with the name behind her, 12-18 particle
+"PORTFOLIO" title, 18-26 skills globe, 26-32 numbers, 32-36 3D game gallery, 36-38 white paper beat, 38-42 awards,
+42-48 "LET'S TALK" contact scene.
+
+To rebuild: run `build_promo_dark.jsx` in After Effects (or `AfterFX.exe -noui -r build_promo_dark.jsx`), then
+`render_dark.ps1`. The soundtrack is generated, not downloaded; to use a licensed track instead, replace
+`footage/music_dark.wav` before running the script.
