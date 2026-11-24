@@ -25,6 +25,8 @@ function GlbAvatar({ calm, spin }: SpinProps) {
   const root = useRef<Group>(null);
   const { actions, mixer } = useAnimations(gltf.animations, root);
   const drag = useRef({ active: false, moved: 0, lastX: 0, yaw: 0, vel: 0, follow: 0 });
+  const gl = useThree((state) => state.gl);
+  const hit = useRef(false); // the press started on the avatar itself, so a tap (not a drag) makes her say hi
 
   // Scale to a fixed height and stand the feet on y = 0, whatever size it was modelled at.
   // The desk, chair and laptop (meshes named Mesh_Desk*) are left out, so she is centered on the base the same way
@@ -121,31 +123,53 @@ function GlbAvatar({ calm, spin }: SpinProps) {
     g.rotation.y = d.yaw + d.follow;
   });
 
+  // Spin her by dragging anywhere on the 3D area (a small target is hard to hit with a thumb). touch-action "pan-y" keeps
+  // vertical swipes scrolling the page, while horizontal swipes turn her.
+  useEffect(() => {
+    const el = gl.domElement;
+    const before = el.style.touchAction;
+    el.style.touchAction = "pan-y";
+    const down = (e: PointerEvent) => {
+      Object.assign(drag.current, { active: true, moved: 0, lastX: e.clientX, vel: 0 });
+      el.setPointerCapture?.(e.pointerId);
+    };
+    const move = (e: PointerEvent) => {
+      const d = drag.current;
+      if (!d.active) return;
+      const dx = e.clientX - d.lastX;
+      d.lastX = e.clientX;
+      d.moved += Math.abs(dx);
+      d.yaw += dx * 0.014;
+      d.vel = dx * 0.014;
+    };
+    const end = (e: PointerEvent, tap: boolean) => {
+      const d = drag.current;
+      if (!d.active) return;
+      d.active = false;
+      el.releasePointerCapture?.(e.pointerId);
+      if (tap && d.moved < 6 && hit.current) play(actions["Hi"] ? "Hi" : "Wave"); // a tap on her, not a drag
+      hit.current = false;
+    };
+    const up = (e: PointerEvent) => end(e, true);
+    const cancel = (e: PointerEvent) => end(e, false); // the browser took the gesture to scroll the page
+    el.addEventListener("pointerdown", down);
+    el.addEventListener("pointermove", move);
+    el.addEventListener("pointerup", up);
+    el.addEventListener("pointercancel", cancel);
+    return () => {
+      el.style.touchAction = before;
+      el.removeEventListener("pointerdown", down);
+      el.removeEventListener("pointermove", move);
+      el.removeEventListener("pointerup", up);
+      el.removeEventListener("pointercancel", cancel);
+    };
+  }, [gl, actions, play]);
+
   return (
     <group
       ref={root}
-      onPointerDown={(e) => {
-        e.stopPropagation();
-        (e.target as unknown as Element).setPointerCapture?.(e.pointerId);
-        Object.assign(drag.current, { active: true, moved: 0, lastX: e.nativeEvent.clientX, vel: 0 });
-        document.body.style.cursor = "grabbing";
-      }}
-      onPointerMove={(e) => {
-        const d = drag.current;
-        if (!d.active) return;
-        const dx = e.nativeEvent.clientX - d.lastX;
-        d.lastX = e.nativeEvent.clientX;
-        d.moved += Math.abs(dx);
-        d.yaw += dx * 0.012;
-        d.vel = dx * 0.012;
-      }}
-      onPointerUp={(e) => {
-        const d = drag.current;
-        if (!d.active) return;
-        d.active = false;
-        (e.target as unknown as Element).releasePointerCapture?.(e.pointerId);
-        document.body.style.cursor = "grab";
-        if (d.moved < 6) play(actions["Hi"] ? "Hi" : "Wave"); // a click, not a drag
+      onPointerDown={() => {
+        hit.current = true;
       }}
       onPointerOver={() => (document.body.style.cursor = "grab")}
       onPointerOut={() => {
