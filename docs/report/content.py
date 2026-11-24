@@ -1,7 +1,7 @@
 # Report content, written once and rendered to PDF and DOCX by build_report.py.
 # Item types: h1, h2, p, bullets, table, fig, figrow, code, pagebreak
 SHOTS = "docs/screenshots/"
-LIVE = "https://web-3d-portfolio-five.vercel.app"
+LIVE = "https://samrah-niazi-portfolio.vercel.app"
 REPO = "https://github.com/Samrah-Niazi/WEB3d-portfolio"
 
 C = []

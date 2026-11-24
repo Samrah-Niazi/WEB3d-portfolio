@@ -76,7 +76,7 @@ Status as of 24 Nov 2026. `[x]` = done and checked, `[~]` = built but still need
 - [x] Project report in PDF: `docs/report/Samrah_Niazi_Project_Report.pdf` (editable copy: `.docx`; rebuild with `python docs/report/build_report.py`)
 - [x] README with setup and installation instructions
 - [x] Screenshots of the major modules (`docs/screenshots/`, used in the report)
-- [x] Live deployment URL: https://web-3d-portfolio-five.vercel.app
+- [x] Live deployment URL: https://samrah-niazi-portfolio.vercel.app
 - [x] GitHub repository link: https://github.com/Samrah-Niazi/WEB3d-portfolio (public)
 
 ## Open items, in order
