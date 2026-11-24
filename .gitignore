@@ -19,3 +19,7 @@ backend/.env
 *.aep Logs/
 *(converted).aep
 _*.txt
+
+# Editor and tool settings
+.claude/
+.vscode/
