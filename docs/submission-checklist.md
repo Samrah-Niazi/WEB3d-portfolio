@@ -73,11 +73,11 @@ Status as of 24 Nov 2026. `[x]` = done and checked, `[~]` = built but still need
 - [x] After Effects project file and final video
 - [x] Working RAG chatbot
 - [~] Functional contact system (needs the delivery screenshot above)
-- [ ] **Project report in PDF** (outline is in `docs/report-outline.md`)
+- [x] Project report in PDF: `docs/report/Samrah_Niazi_Project_Report.pdf` (editable copy: `.docx`; rebuild with `python docs/report/build_report.py`)
 - [x] README with setup and installation instructions
-- [ ] **Screenshots of the major modules** (list in `docs/screenshots/CHECKLIST.md`)
-- [ ] **Live deployment URL**
-- [ ] **GitHub repository link** (nothing is committed or pushed yet) or a zip of the project
+- [x] Screenshots of the major modules (`docs/screenshots/`, used in the report)
+- [x] Live deployment URL: https://web-3d-portfolio-five.vercel.app
+- [x] GitHub repository link: https://github.com/Samrah-Niazi/WEB3d-portfolio (public)
 
 ## Open items, in order
 1. Commit and push to GitHub, and redeploy to Vercel (do this last, after you are happy with the site).

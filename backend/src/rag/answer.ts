@@ -32,32 +32,29 @@ const LANGUAGE_NAMES: Record<string, string> = {
   fr: "French",
 };
 
-// The knowledge base and the embedding model are English, so questions in other
-// languages are rewritten into a short English search query before retrieval.
-async function toEnglishQuery(client: Anthropic, text: string): Promise<string> {
+// The knowledge base and the embedding model are English, so every question is rewritten into a short,
+// standalone English search query before retrieval. This translates other languages and, for a short
+// follow-up like "tell me more", folds in the previous question only when the new one depends on it.
+async function toSearchQuery(client: Anthropic, text: string, previous?: string): Promise<string> {
   const res = await client.messages.create({
     model: MODEL,
     max_tokens: 80,
     system:
-      "Rewrite the visitor's question as a short, standalone English search query. Output only the query, nothing else.",
-    messages: [{ role: "user", content: text }],
+      "Rewrite the visitor's latest question as a short, standalone English search query. " +
+      "Use the previous question only if the latest one is clearly a follow-up that cannot be understood without it; " +
+      "otherwise ignore the previous question completely. Output only the query, nothing else.",
+    messages: [{ role: "user", content: `${previous ? `Previous question: ${previous}
+` : ""}Latest question: ${text}` }],
   });
   const out = res.content.map((b) => (b.type === "text" ? b.text : "")).join("").trim();
   return out || text;
 }
 
-const mostlyLatin = (s: string) => {
-  const letters = s.match(/\p{L}/gu) ?? [];
-  return letters.length === 0 || letters.filter((c) => /[A-Za-z]/.test(c)).length / letters.length > 0.8;
-};
-
 export async function answer(messages: ChatMessage[], lang = "en"): Promise<ChatResult> {
   const client = new Anthropic();
   const last = messages[messages.length - 1].content;
-  // Follow-ups like "tell me more" retrieve better when the previous question is included.
   const prevUser = [...messages.slice(0, -1)].reverse().find((m) => m.role === "user")?.content;
-  let query = last.split(/\s+/).length < 6 && prevUser ? `${prevUser} ${last}` : last;
-  if (lang !== "en" || !mostlyLatin(query)) query = await toEnglishQuery(client, query);
+  const query = await toSearchQuery(client, last, prevUser);
 
   const hits = (await search(query, 5)).filter((h) => h.score >= MIN_SCORE);
   if (hits.length === 0) return { answer: NO_INFO, sources: [] };
