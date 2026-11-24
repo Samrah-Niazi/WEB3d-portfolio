@@ -10,7 +10,7 @@ export default function ThemeToggle() {
     if (next) document.documentElement.dataset.theme = "light";
     else delete document.documentElement.dataset.theme;
     try {
-      localStorage.setItem("theme", next ? "light" : "dark");
+      localStorage.setItem("pf-theme", next ? "light" : "dark");
     } catch {}
   };
 

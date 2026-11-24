@@ -11,10 +11,10 @@
     <title>Samrah Niazi | Game Developer Portfolio</title>
     <script>
       try {
-        // Dark is the default look; "light" is the only stored override. The palette defaults to maroon.
+        // New visitors always get the dark maroon look. Only a choice made on this version of the site is remembered (pf- keys), so settings saved by older versions are ignored.
         var r = document.documentElement;
-        if (localStorage.getItem("theme") === "light") r.dataset.theme = "light";
-        var p = localStorage.getItem("palette");
+        if (localStorage.getItem("pf-theme") === "light") r.dataset.theme = "light";
+        var p = localStorage.getItem("pf-palette");
         r.dataset.palette = ["maroon", "noir", "emerald", "sunset"].indexOf(p) >= 0 ? p : "maroon";
       } catch (e) {}
     </script>

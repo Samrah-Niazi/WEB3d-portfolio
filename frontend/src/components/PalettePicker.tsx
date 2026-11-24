@@ -9,7 +9,7 @@ export default function PalettePicker() {
     setPalette(id);
     document.documentElement.dataset.palette = id;
     try {
-      localStorage.setItem("palette", id);
+      localStorage.setItem("pf-palette", id);
     } catch {}
   };
 
