@@ -11,8 +11,8 @@ export default function VideoSection() {
   const hasPoster = useAsset(POSTER_URL);
 
   return (
-    <Section id="video" title="Intro video" eyebrow="02 / Showreel">
-      <Tilt className="overflow-hidden rounded-3xl border-2 border-accent bg-surface" max={4}>
+    <Section id="video" title="Intro video" eyebrow="02 / Showreel" tone="page">
+      <Tilt className="overflow-hidden rounded-[18px] border border-line bg-black shadow-[0_40px_90px_color-mix(in_srgb,var(--p1)_45%,transparent)]" max={4}>
         {hasVideo ? (
           <video
             className="aspect-video w-full bg-black"

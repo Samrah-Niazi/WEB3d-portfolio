@@ -1,29 +1,17 @@
 import { useEffect, useState } from "react";
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { profile } from "../data/profile";
 
-const MIN_MS = 1400; // always show the splash briefly so it never just flashes
-const MAX_MS = 9000; // give up waiting for the avatar after this long
-
-// Branded splash screen. It lifts once the avatar has loaded (it fires "avatar-ready") or after a time limit.
+// Opening splash: the name lights up on black, then the curtain lifts to reveal the hero.
 export default function Preloader() {
+  const calm = !!useReducedMotion();
   const [visible, setVisible] = useState(true);
+  const word = profile.name.split(" ")[0].toUpperCase();
 
   useEffect(() => {
-    const start = performance.now();
-    let hide = 0;
-    const finish = () => {
-      window.clearTimeout(hide);
-      hide = window.setTimeout(() => setVisible(false), Math.max(0, MIN_MS - (performance.now() - start)));
-    };
-    window.addEventListener("avatar-ready", finish);
-    const giveUp = window.setTimeout(finish, MAX_MS);
-    return () => {
-      window.removeEventListener("avatar-ready", finish);
-      window.clearTimeout(giveUp);
-      window.clearTimeout(hide);
-    };
-  }, []);
+    const t = window.setTimeout(() => setVisible(false), calm ? 600 : 2600);
+    return () => window.clearTimeout(t);
+  }, [calm]);
 
   useEffect(() => {
     document.body.style.overflow = visible ? "hidden" : "";
@@ -32,8 +20,6 @@ export default function Preloader() {
     };
   }, [visible]);
 
-  const initials = profile.name.split(" ").map((w) => w[0]).join("");
-
   return (
     <AnimatePresence>
       {visible && (
@@ -41,21 +27,37 @@ export default function Preloader() {
           key="splash"
           role="status"
           aria-label="Loading portfolio"
-          className="fixed inset-0 z-[100] flex flex-col items-center justify-center gap-6 bg-bg"
-          exit={{ opacity: 0, scale: 1.04 }}
-          transition={{ duration: 0.6, ease: "easeInOut" }}
+          className="dark-scope fixed inset-0 z-[100] flex flex-col items-center justify-center gap-7 bg-black"
+          exit={{ y: "-100%" }}
+          transition={{ duration: 0.9, ease: [0.76, 0, 0.24, 1] }}
         >
-          <div className="relative flex items-center justify-center">
-            <div className="splash-ring" />
-            <span className="font-display title-3d absolute text-3xl font-bold">{initials}</span>
-          </div>
-          <p className="gradient-text font-display text-xl font-bold tracking-wide">{profile.name}</p>
-          <div className="h-1.5 w-48 overflow-hidden rounded-full bg-line">
+          <p aria-hidden="true" className="impact glow-text flex text-[clamp(3rem,11vw,8rem)] tracking-[0.22em] text-fg">
+            {word.split("").map((ch, i) => (
+              <motion.span
+                key={i}
+                initial={{ opacity: 0, y: 18, filter: "blur(10px)" }}
+                animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+                transition={{ duration: 0.7, delay: 0.15 + i * 0.12, ease: "easeOut" }}
+              >
+                {ch}
+              </motion.span>
+            ))}
+            <motion.span
+              className="text-accent2"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.15 + word.length * 0.12, duration: 0.5 }}
+              style={{ color: "var(--hi)" }}
+            >
+              .
+            </motion.span>
+          </p>
+          <div className="h-px w-44 overflow-hidden bg-line">
             <motion.div
-              className="h-full rounded-full bg-gradient-to-r from-accent via-accent2 to-accent3"
+              className="h-full bg-accent"
               initial={{ x: "-100%" }}
-              animate={{ x: "100%" }}
-              transition={{ repeat: Infinity, duration: 1.2, ease: "easeInOut" }}
+              animate={{ x: "0%" }}
+              transition={{ duration: calm ? 0.4 : 2.2, ease: "easeInOut" }}
             />
           </div>
         </motion.div>

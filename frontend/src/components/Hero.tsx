@@ -1,19 +1,10 @@
-import { lazy, Suspense, useEffect, useState } from "react";
-import { motion } from "framer-motion";
+import { useEffect, useRef, useState } from "react";
+import { motion, useMotionValue, useReducedMotion, useScroll, useSpring, useTransform } from "framer-motion";
 import { profile } from "../data/profile";
-import { useOnScreen } from "../lib/useOnScreen";
-import Marquee from "./Marquee";
 
-const HeroScene = lazy(() => import("./HeroScene"));
-
-const MOVES = [
-  { name: "Twirl", icon: "💃" },
-  { name: "Cheer", icon: "🎉" },
-  { name: "Nod", icon: "🙂" },
-  { name: "Think", icon: "🤔" },
-  { name: "Play", icon: "🎮" },
-];
 const ROLES = ["Game Developer", "AR/VR Developer", "Gameplay Programmer", "Unity & Unreal Creator"];
+const SILHOUETTE = "/images/silhouette.png";
+export const CV_URL = "/Samrah_Niazi_CV.pdf";
 
 // Types out each role, pauses, deletes it, then moves to the next.
 function RoleTyper() {
@@ -36,87 +27,127 @@ function RoleTyper() {
   }, [text, deleting, i]);
 
   return (
-    <p className="font-display mt-4 min-h-[2.2rem] text-2xl font-bold sm:text-3xl">
+    <p className="mt-3 min-h-[2rem] text-xl font-bold tracking-tight text-fg sm:text-2xl">
       <span className="sr-only">{profile.role}</span>
-      <span aria-hidden="true" className="gradient-text">{text}</span>
-      <span aria-hidden="true" className="caret text-accent2" />
+      <span aria-hidden="true">{text}</span>
+      <span aria-hidden="true" className="caret" style={{ color: "var(--hi)" }} />
     </p>
   );
 }
 
-// The "Try a move" chips. On phones they sit right under the avatar (see App); from tablet up they sit in the hero text.
-export function MoveChips({ className = "" }: { className?: string }) {
+function Buttons({ className = "" }: { className?: string }) {
   return (
-    <div className={`flex flex-wrap items-center gap-2 ${className}`}>
-      <span className="text-sm text-muted">Try a move:</span>
-      {MOVES.map((m) => (
-        <button
-          key={m.name}
-          type="button"
-          onClick={() => window.dispatchEvent(new CustomEvent("avatar-play", { detail: m.name }))}
-          className="glass rounded-full px-3 py-1 text-sm font-semibold transition hover:border-accent"
-        >
-          <span aria-hidden="true">{m.icon}</span> {m.name}
-        </button>
-      ))}
+    <div className={`flex flex-wrap gap-3 ${className}`}>
+      <a href="#projects" className="btn-3d !px-5 !py-2.5 text-sm">View projects</a>
+      <a href={CV_URL} download="Samrah_Niazi_CV.pdf" className="btn-ghost-3d !px-5 !py-2.5 text-sm">
+        <span aria-hidden="true">↓</span> Download CV
+      </a>
+      <a href="#contact" className="btn-ghost-3d !px-5 !py-2.5 text-sm">Contact me</a>
     </div>
   );
 }
 
 const rise = (delay: number) => ({
-  initial: { opacity: 0, y: 28 },
+  initial: { opacity: 0, y: 36 },
   animate: { opacity: 1, y: 0 },
-  transition: { duration: 0.7, delay, ease: "easeOut" as const },
+  transition: { duration: 0.9, delay, ease: "easeOut" as const },
 });
 
+// Page one: the shadow of the portrait in the middle, the giant name behind it, small text on either side.
 export default function Hero() {
-  const [sceneRef, sceneVisible] = useOnScreen<HTMLDivElement>();
+  const calm = !!useReducedMotion();
+  const ref = useRef<HTMLElement>(null);
+
+  // Mouse parallax: the shadow and the name drift in opposite directions.
+  const mx = useMotionValue(0);
+  const sx = useSpring(mx, { stiffness: 50, damping: 18 });
+  const figureX = useTransform(sx, (v) => v * -20);
+  const textX = useTransform(sx, (v) => v * 26);
+
+  // Scrolling away: the name grows past you while the shadow sinks back.
+  const { scrollYProgress: p } = useScroll({ target: ref, offset: ["start start", "end start"] });
+  const nameScale = useTransform(p, [0, 1], [1, 1.35]);
+  const nameY = useTransform(p, [0, 1], [0, -120]);
+  const nameOpacity = useTransform(p, [0, 0.8], [1, 0]);
+  const figY = useTransform(p, [0, 1], [0, 140]);
+  const figScale = useTransform(p, [0, 1], [1, 1.1]);
+  const figOpacity = useTransform(p, [0.3, 1], [1, 0]);
+
+  const [first, ...rest] = profile.name.toUpperCase().split(" ");
+
   return (
-    <section id="home" className="relative flex min-h-[170svh] items-start overflow-hidden pt-32 md:min-h-screen md:items-center md:pt-20">
-      <div ref={sceneRef} className="absolute inset-0">
-        <Suspense fallback={null}>
-          <HeroScene active={sceneVisible} />
-        </Suspense>
-      </div>
-      <div className="pointer-events-none relative z-10 mx-auto w-full max-w-6xl px-4">
-        <motion.p className="eyebrow" {...rise(0.1)}>Hello, I&apos;m</motion.p>
-        <motion.h1 className="title-3d text-5xl font-bold tracking-tight sm:text-7xl lg:text-8xl" {...rise(0.2)}>
-          {profile.name}
-        </motion.h1>
-        <motion.div {...rise(0.3)}><RoleTyper /></motion.div>
-        <motion.p className="mt-5 max-w-xl text-lg text-muted" {...rise(0.4)}>{profile.tagline}</motion.p>
-
-        <motion.div className="pointer-events-auto mt-7 flex flex-wrap gap-3 sm:mt-9 sm:gap-4" {...rise(0.6)}>
-          <a href="#projects" className="btn-3d !px-5 !py-2.5 text-sm sm:!px-7 sm:!py-3 sm:text-base">View projects</a>
-          <a href="#contact" className="btn-ghost-3d !px-5 !py-2.5 text-sm sm:!px-7 sm:!py-3 sm:text-base">Contact me</a>
-          <button
-            type="button"
-            className="btn-ghost-3d !px-5 !py-2.5 text-sm sm:!px-7 sm:!py-3 sm:text-base"
-            onClick={() => window.dispatchEvent(new Event("avatar-wave"))}
+    <section
+      id="home"
+      ref={ref}
+      className="grain relative isolate min-h-[100svh] overflow-hidden"
+      style={{ background: "var(--hero-bg)" }}
+      onPointerMove={(e) => !calm && mx.set(e.clientX / window.innerWidth - 0.5)}
+    >
+      {/* the giant name, behind the shadow */}
+      <motion.div style={{ scale: calm ? 1 : nameScale, y: calm ? 0 : nameY, opacity: calm ? 1 : nameOpacity }} className="absolute inset-x-0 top-[11svh] z-10 select-none text-center">
+        <motion.div style={{ x: calm ? 0 : textX }}>
+          <motion.p className="eyebrow !text-[color:var(--hero-text)]" {...rise(2.7)}>Hello, I&apos;m</motion.p>
+          <motion.h1
+            className="impact text-[min(19vw,29svh)] leading-[0.88]" style={{ color: "var(--hero-name)" }}
+            initial={{ opacity: 0, y: 90 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1.1, delay: 2.5, ease: [0.22, 1, 0.36, 1] }}
           >
-            <span aria-hidden="true">👋</span> Say hi
-          </button>
+            {first}
+            <br />
+            {rest.join(" ")}
+          </motion.h1>
         </motion.div>
+      </motion.div>
 
-        {/* Phones get the moving technologies strip here, and the move chips go under the avatar instead. */}
-        <motion.div className="mt-6 md:hidden" {...rise(0.7)}>
-          <Marquee compact />
-        </motion.div>
-        <motion.div className="pointer-events-auto hidden max-w-md md:block mt-5" {...rise(0.7)}>
-          <MoveChips />
-        </motion.div>
-        <p className="pointer-events-none mt-3 hidden max-w-sm text-sm text-muted sm:block">
-          Drag the avatar to spin her around, click her to wave, or click her base to twirl.
-        </p>
-      </div>
+      {/* the shadow of the portrait, centered */}
+      <motion.div
+        aria-hidden="true"
+        style={{ y: calm ? 0 : figY, scale: calm ? 1 : figScale, opacity: calm ? 1 : figOpacity }}
+        className="pointer-events-none absolute bottom-0 left-1/2 z-20 -translate-x-1/2"
+      >
+        <motion.img
+          src={SILHOUETTE}
+          alt=""
+          draggable={false}
+          style={{ x: calm ? 0 : figureX, filter: "drop-shadow(0 0 40px color-mix(in srgb, var(--tint) 30%, transparent))" }}
+          className="block h-[58svh] w-auto max-w-none select-none md:h-[67svh]"
+          initial={{ opacity: 0, y: 70 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 1.3, delay: 2.7, ease: "easeOut" }}
+        />
+      </motion.div>
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-x-0 bottom-0 z-30 h-44"
+        style={{ background: "linear-gradient(to top, color-mix(in srgb, var(--hero-fade) 90%, transparent), color-mix(in srgb, var(--hero-fade) 40%, transparent), transparent)" }}
+      />
+
+      {/* small text, left and right of the shadow (desktop) */}
+      <motion.div {...rise(3.0)} className="absolute bottom-[16svh] left-[4vw] z-40 hidden w-[24vw] max-w-sm md:block">
+        <p className="text-[0.7rem] font-semibold uppercase tracking-[0.26em] text-fg/70">About</p>
+        <p className="mt-2 text-base leading-relaxed text-fg/90">{profile.tagline}</p>
+      </motion.div>
+      <motion.div {...rise(3.1)} className="absolute bottom-[16svh] right-[4vw] z-40 hidden w-[24vw] min-w-[17rem] max-w-sm md:block">
+        <p className="text-[0.7rem] font-semibold uppercase tracking-[0.26em] text-fg/70">Currently</p>
+        <RoleTyper />
+        <Buttons className="mt-5" />
+      </motion.div>
+
+      {/* phones: one block under the shadow */}
+      <motion.div {...rise(3.0)} className="absolute inset-x-0 bottom-0 z-40 px-5 pb-24 md:hidden">
+        <p className="text-base leading-relaxed text-fg/90">{profile.tagline}</p>
+        <RoleTyper />
+        <Buttons className="mt-4" />
+      </motion.div>
 
       <a
         href="#about"
-        className="pointer-events-auto absolute bottom-8 left-1/2 hidden -translate-x-1/2 flex-col items-center gap-2 text-xs font-semibold uppercase tracking-widest text-muted lg:flex"
+        className="absolute bottom-6 left-1/2 z-40 hidden -translate-x-1/2 flex-col items-center gap-2 text-[0.68rem] font-semibold uppercase tracking-[0.3em] text-fg/80 md:flex"
       >
         Scroll
-        <span className="flex h-9 w-6 justify-center rounded-full border-2 border-accent pt-1.5">
-          <span className="h-2 w-1 rounded-full bg-accent" style={{ animation: "bounce-y 1.4s ease-in-out infinite" }} />
+        <span className="flex h-9 w-6 justify-center rounded-full border border-fg/60 pt-1.5">
+          <span className="h-2 w-px rounded-full bg-fg" style={{ animation: "bounce-y 1.4s ease-in-out infinite" }} />
         </span>
       </a>
     </section>

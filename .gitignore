@@ -14,3 +14,8 @@ dist-live/
 backend/api key/
 backend/app password/
 backend/.env
+
+# After Effects render logs and auto-converted copies
+*.aep Logs/
+*(converted).aep
+_*.txt

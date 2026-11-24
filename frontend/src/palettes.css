@@ -1,0 +1,218 @@
+/* Generated palette tokens: four palettes, each with a dark and a light theme.
+ * Dark values also apply inside .dark-scope (always-dark scenes) and, in the light theme, inside .tone-a panels. */
+
+/* maroon, dark */
+:root[data-palette="maroon"],
+:root[data-palette="maroon"] .dark-scope,
+:root[data-palette="maroon"][data-theme="light"] .tone-a {
+  --p0: #2a0710; --p1: #5c101d; --p2: #7a2233; --p3: #8a2639;
+  --tint: #e0b4bd; --ink: #0c0d0f; --paper: #f2f3f5;
+  --bg: #0c0d0f;
+  --bg2: color-mix(in srgb, #0c0d0f 88%, #f2f3f5);
+  --surface: color-mix(in srgb, #0c0d0f 82%, #f2f3f5 12%);
+  --fg: #f2f3f5;
+  --muted: color-mix(in srgb, #f2f3f5 68%, #0c0d0f);
+  --accent: #e0b4bd;
+  --accent2: #7a2233;
+  --accent3: #c3c7cc;
+  --on-accent: #0c0d0f;
+  --hi: #c0455c;
+  --line: color-mix(in srgb, #f2f3f5 20%, transparent);
+  --glass: color-mix(in srgb, #0c0d0f 62%, transparent);
+  --glow: 122 34 51;
+  --btn-a: #8a2639; --btn-b: #5c101d; --btn-shadow: #2e0810; --btn-text: #f2f3f5; --btn-glow: 122 34 51;
+  --band-bg: #e4e6ea; --band-fg: #15171a; --band-muted: #4b5059; --band-line: rgb(21 23 26 / 0.16); --band-accent: #7a2233;
+  --card-bg: #0c0d0f; --card-fg: #f2f3f5; --card-muted: color-mix(in srgb, #f2f3f5 68%, #0c0d0f);
+  --card-accent: #e0b4bd; --card-line: color-mix(in srgb, #f2f3f5 22%, transparent); --edge: #e0b4bd;
+  --hero-bg: radial-gradient(60% 75% at 50% 52%, #8a2639 0%, #5c101d 42%, #2a0710 100%);
+  --hero-name: #f2f3f5; --hero-text: #f2f3f5; --hero-fade: #000;
+  --c1: #7a2233; --c2: #c3c7cc; --c3: #e0b4bd; --label1: #e0b4bd; --label2: #c3c7cc;
+  --disc: color-mix(in srgb, #0c0d0f 82%, #f2f3f5 12%);
+  --fog-opacity: 1;
+  --footer-bg: #0c0d0f;
+  color: var(--fg);
+}
+
+/* maroon, light */
+:root[data-palette="maroon"][data-theme="light"] {
+  --bg: #f1ece4; --bg2: #e8e0d4;
+  --surface: rgb(255 255 255 / 0.85);
+  --fg: #1c1214; --muted: #5b4a4d;
+  --accent: #7a2233; --accent2: #5c101d; --accent3: #2a2d33;
+  --on-accent: #f2f3f5;
+  --hi: #a8344a;
+  --line: color-mix(in srgb, #1c1214 16%, transparent);
+  --glass: rgb(255 255 255 / 0.72);
+  --glow: 122 34 51;
+  --band-bg: #5c101d; --band-fg: #f2f3f5; --band-muted: color-mix(in srgb, #f2f3f5 72%, #5c101d); --band-line: color-mix(in srgb, #f2f3f5 22%, transparent); --band-accent: #e0b4bd;
+  --card-bg: #fffaf2; --card-fg: #1c1214; --card-muted: #5b4a4d;
+  --card-accent: #7a2233; --card-line: color-mix(in srgb, #1c1214 16%, transparent); --edge: #7a2233;
+  --hero-bg: radial-gradient(60% 75% at 50% 52%, #fffdf8 0%, #f1ece4 45%, #e6dccf 100%);
+  --hero-name: #5c101d; --hero-text: #1c1214; --hero-fade: #f1ece4;
+  --c1: #5c101d; --c2: #1c1214; --c3: #7a2233; --label1: #7a2233; --label2: #1c1214;
+  --disc: #d9cfc4;
+  --fog-opacity: 0;
+  --footer-bg: #2a0710;
+}
+
+/* noir, dark */
+:root[data-palette="noir"],
+:root[data-palette="noir"] .dark-scope,
+:root[data-palette="noir"][data-theme="light"] .tone-a {
+  --p0: #050505; --p1: #15130f; --p2: #2c2820; --p3: #40392d;
+  --tint: #dcc9a3; --ink: #0a0a09; --paper: #f4ecdc;
+  --bg: #0a0a09;
+  --bg2: color-mix(in srgb, #0a0a09 88%, #f4ecdc);
+  --surface: color-mix(in srgb, #0a0a09 82%, #f4ecdc 12%);
+  --fg: #f4ecdc;
+  --muted: color-mix(in srgb, #f4ecdc 68%, #0a0a09);
+  --accent: #dcc9a3;
+  --accent2: #8c7b5a;
+  --accent3: #cdbf9f;
+  --on-accent: #0a0a09;
+  --hi: #b9a77f;
+  --line: color-mix(in srgb, #f4ecdc 20%, transparent);
+  --glass: color-mix(in srgb, #0a0a09 62%, transparent);
+  --glow: 220 201 163;
+  --btn-a: #4a4234; --btn-b: #1a1712; --btn-shadow: #000000; --btn-text: #f4ecdc; --btn-glow: 220 201 163;
+  --band-bg: #e8dfca; --band-fg: #15171a; --band-muted: #4b5059; --band-line: rgb(21 23 26 / 0.16); --band-accent: #2c2820;
+  --card-bg: #0a0a09; --card-fg: #f4ecdc; --card-muted: color-mix(in srgb, #f4ecdc 68%, #0a0a09);
+  --card-accent: #dcc9a3; --card-line: color-mix(in srgb, #f4ecdc 22%, transparent); --edge: #dcc9a3;
+  --hero-bg: radial-gradient(60% 75% at 50% 52%, #40392d 0%, #15130f 42%, #050505 100%);
+  --hero-name: #f4ecdc; --hero-text: #f4ecdc; --hero-fade: #000;
+  --c1: #2c2820; --c2: #cdbf9f; --c3: #dcc9a3; --label1: #dcc9a3; --label2: #cdbf9f;
+  --disc: color-mix(in srgb, #0a0a09 82%, #f4ecdc 12%);
+  --fog-opacity: 1;
+  --footer-bg: #0a0a09;
+  color: var(--fg);
+}
+
+/* noir, light */
+:root[data-palette="noir"][data-theme="light"] {
+  --bg: #efe6d4; --bg2: #e4d9c1;
+  --surface: rgb(255 255 255 / 0.85);
+  --fg: #14110c; --muted: #5a5242;
+  --accent: #3a3226; --accent2: #15130f; --accent3: #2c2820;
+  --on-accent: #f4ecdc;
+  --hi: #6b5d3f;
+  --line: color-mix(in srgb, #14110c 16%, transparent);
+  --glass: rgb(255 255 255 / 0.72);
+  --glow: 220 201 163;
+  --band-bg: #15130f; --band-fg: #f4ecdc; --band-muted: color-mix(in srgb, #f4ecdc 72%, #15130f); --band-line: color-mix(in srgb, #f4ecdc 22%, transparent); --band-accent: #dcc9a3;
+  --card-bg: #fbf6ea; --card-fg: #14110c; --card-muted: #5a5242;
+  --card-accent: #3a3226; --card-line: color-mix(in srgb, #14110c 16%, transparent); --edge: #2c2820;
+  --hero-bg: radial-gradient(60% 75% at 50% 52%, #faf4e6 0%, #efe6d4 45%, #e0d4b8 100%);
+  --hero-name: #15130f; --hero-text: #14110c; --hero-fade: #efe6d4;
+  --c1: #15130f; --c2: #14110c; --c3: #2c2820; --label1: #3a3226; --label2: #14110c;
+  --disc: #d6c9ac;
+  --fog-opacity: 0;
+  --footer-bg: #050505;
+}
+
+/* emerald, dark */
+:root[data-palette="emerald"],
+:root[data-palette="emerald"] .dark-scope,
+:root[data-palette="emerald"][data-theme="light"] .tone-a {
+  --p0: #03231a; --p1: #0b5d46; --p2: #128064; --p3: #17a07c;
+  --tint: #ff9ccb; --ink: #04130e; --paper: #effbf6;
+  --bg: #04130e;
+  --bg2: color-mix(in srgb, #04130e 88%, #effbf6);
+  --surface: color-mix(in srgb, #04130e 82%, #effbf6 12%);
+  --fg: #effbf6;
+  --muted: color-mix(in srgb, #effbf6 68%, #04130e);
+  --accent: #ff9ccb;
+  --accent2: #ec4899;
+  --accent3: #b8e8d4;
+  --on-accent: #04130e;
+  --hi: #ff5fa2;
+  --line: color-mix(in srgb, #effbf6 20%, transparent);
+  --glass: color-mix(in srgb, #04130e 62%, transparent);
+  --glow: 225 29 116;
+  --btn-a: #f0398a; --btn-b: #be185d; --btn-shadow: #831843; --btn-text: #ffffff; --btn-glow: 225 29 116;
+  --band-bg: #dff1e8; --band-fg: #15171a; --band-muted: #4b5059; --band-line: rgb(21 23 26 / 0.16); --band-accent: #0b5d46;
+  --card-bg: #04130e; --card-fg: #effbf6; --card-muted: color-mix(in srgb, #effbf6 68%, #04130e);
+  --card-accent: #ff9ccb; --card-line: color-mix(in srgb, #effbf6 22%, transparent); --edge: #ff9ccb;
+  --hero-bg: radial-gradient(60% 75% at 50% 52%, #17a07c 0%, #0b5d46 42%, #03231a 100%);
+  --hero-name: #effbf6; --hero-text: #effbf6; --hero-fade: #000;
+  --c1: #128064; --c2: #b8e8d4; --c3: #ff9ccb; --label1: #ff9ccb; --label2: #b8e8d4;
+  --disc: color-mix(in srgb, #04130e 82%, #effbf6 12%);
+  --fog-opacity: 1;
+  --footer-bg: #04130e;
+  color: var(--fg);
+}
+
+/* emerald, light */
+:root[data-palette="emerald"][data-theme="light"] {
+  --bg: #eefaf4; --bg2: #e0f3ea;
+  --surface: rgb(255 255 255 / 0.85);
+  --fg: #06281f; --muted: #3f6458;
+  --accent: #0b6b52; --accent2: #0b5d46; --accent3: #0f7a5c;
+  --on-accent: #effbf6;
+  --hi: #be185d;
+  --line: color-mix(in srgb, #06281f 16%, transparent);
+  --glass: rgb(255 255 255 / 0.72);
+  --glow: 225 29 116;
+  --band-bg: #0b5d46; --band-fg: #effbf6; --band-muted: color-mix(in srgb, #effbf6 72%, #0b5d46); --band-line: color-mix(in srgb, #effbf6 22%, transparent); --band-accent: #ff9ccb;
+  --card-bg: #fbfffd; --card-fg: #06281f; --card-muted: #3f6458;
+  --card-accent: #0b6b52; --card-line: color-mix(in srgb, #06281f 16%, transparent); --edge: #128064;
+  --hero-bg: radial-gradient(60% 75% at 50% 52%, #ffffff 0%, #eefaf4 45%, #d5efe3 100%);
+  --hero-name: #0b5d46; --hero-text: #06281f; --hero-fade: #eefaf4;
+  --c1: #0b5d46; --c2: #06281f; --c3: #128064; --label1: #0b6b52; --label2: #06281f;
+  --disc: #cfe9dd;
+  --fog-opacity: 0;
+  --footer-bg: #03231a;
+}
+
+/* sunset, dark */
+:root[data-palette="sunset"],
+:root[data-palette="sunset"] .dark-scope,
+:root[data-palette="sunset"][data-theme="light"] .tone-a {
+  --p0: #120a2e; --p1: #2d1b69; --p2: #4527a0; --p3: #6a3fe0;
+  --tint: #ffb072; --ink: #0a0720; --paper: #fff3ea;
+  --bg: #0a0720;
+  --bg2: color-mix(in srgb, #0a0720 88%, #fff3ea);
+  --surface: color-mix(in srgb, #0a0720 82%, #fff3ea 12%);
+  --fg: #fff3ea;
+  --muted: color-mix(in srgb, #fff3ea 68%, #0a0720);
+  --accent: #ffb072;
+  --accent2: #ff8a3d;
+  --accent3: #e2d0ff;
+  --on-accent: #0a0720;
+  --hi: #ff8a3d;
+  --line: color-mix(in srgb, #fff3ea 20%, transparent);
+  --glass: color-mix(in srgb, #0a0720 62%, transparent);
+  --glow: 255 138 61;
+  --btn-a: #ff8a3d; --btn-b: #e8501a; --btn-shadow: #8a2a08; --btn-text: #1a0f3c; --btn-glow: 255 138 61;
+  --band-bg: #f3e6d8; --band-fg: #15171a; --band-muted: #4b5059; --band-line: rgb(21 23 26 / 0.16); --band-accent: #4527a0;
+  --card-bg: #0a0720; --card-fg: #fff3ea; --card-muted: color-mix(in srgb, #fff3ea 68%, #0a0720);
+  --card-accent: #ffb072; --card-line: color-mix(in srgb, #fff3ea 22%, transparent); --edge: #ffb072;
+  --hero-bg: radial-gradient(60% 75% at 50% 52%, #6a3fe0 0%, #2d1b69 42%, #120a2e 100%);
+  --hero-name: #fff3ea; --hero-text: #fff3ea; --hero-fade: #000;
+  --c1: #4527a0; --c2: #e2d0ff; --c3: #ffb072; --label1: #ffb072; --label2: #e2d0ff;
+  --disc: color-mix(in srgb, #0a0720 82%, #fff3ea 12%);
+  --fog-opacity: 1;
+  --footer-bg: #0a0720;
+  color: var(--fg);
+}
+
+/* sunset, light */
+:root[data-palette="sunset"][data-theme="light"] {
+  --bg: #fff3ea; --bg2: #ffe8d6;
+  --surface: rgb(255 255 255 / 0.85);
+  --fg: #1a0f3c; --muted: #5b4a7a;
+  --accent: #5b34c9; --accent2: #2d1b69; --accent3: #4527a0;
+  --on-accent: #fff3ea;
+  --hi: #d9480f;
+  --line: color-mix(in srgb, #1a0f3c 16%, transparent);
+  --glass: rgb(255 255 255 / 0.72);
+  --glow: 255 138 61;
+  --band-bg: #2d1b69; --band-fg: #fff3ea; --band-muted: color-mix(in srgb, #fff3ea 72%, #2d1b69); --band-line: color-mix(in srgb, #fff3ea 22%, transparent); --band-accent: #ffb072;
+  --card-bg: #fffaf5; --card-fg: #1a0f3c; --card-muted: #5b4a7a;
+  --card-accent: #5b34c9; --card-line: color-mix(in srgb, #1a0f3c 16%, transparent); --edge: #4527a0;
+  --hero-bg: radial-gradient(60% 75% at 50% 52%, #fffaf4 0%, #fff3ea 45%, #ffdfc4 100%);
+  --hero-name: #2d1b69; --hero-text: #1a0f3c; --hero-fade: #fff3ea;
+  --c1: #2d1b69; --c2: #1a0f3c; --c3: #4527a0; --label1: #5b34c9; --label2: #1a0f3c;
+  --disc: #f0dcc8;
+  --fog-opacity: 0;
+  --footer-bg: #120a2e;
+}

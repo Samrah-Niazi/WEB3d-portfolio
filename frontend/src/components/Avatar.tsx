@@ -14,7 +14,8 @@ type SpinProps = Props & { spin: MutableRefObject<number> };
 
 /*
  * Real avatar: the Blender export in public/models/avatar.glb.
- * Clips are matched by name: "Idle" loops; Wave, Nod, Cheer, Twirl and Think play once and hand back to Idle.
+ * Clips are matched by name: "Idle" loops (she sits behind a Dell laptop, peeking over it and waving); Hi, Wave, Nod, Cheer,
+ * Twirl, Think and Play play once and hand back to Idle. Every move except Hi stands her up for the move.
  * Interaction: drag to spin (she eases back to face you), click or tap to wave, and the
  * "Say hi" button in the hero sends an "avatar-wave" event. User-triggered motion always works;
  * the "reduce motion" setting only turns off the automatic pointer-following.
@@ -26,17 +27,25 @@ function GlbAvatar({ calm, spin }: SpinProps) {
   const drag = useRef({ active: false, moved: 0, lastX: 0, yaw: 0, vel: 0, follow: 0 });
 
   // Scale to a fixed height and stand the feet on y = 0, whatever size it was modelled at.
+  // The desk, chair and laptop (meshes named Mesh_Desk*) are left out, so she is centered on the base the same way
+  // whether she sits or stands.
   const { scale, offset } = useMemo(() => {
-    const box = new Box3().setFromObject(gltf.scene);
+    const box = new Box3();
+    gltf.scene.updateMatrixWorld(true);
+    gltf.scene.traverse((o) => {
+      if ((o as Mesh).isMesh && !o.name.startsWith("Mesh_Desk")) box.expandByObject(o);
+    });
     const size = box.getSize(new Vector3());
     const s = size.y > 0 ? HEIGHT / size.y : 1;
     return { scale: s, offset: new Vector3(-((box.min.x + box.max.x) / 2) * s, -box.min.y * s, -((box.min.z + box.max.z) / 2) * s) };
   }, [gltf.scene]);
 
-  // Bones that the clips show or hide by scaling them: the console (Play only) and the two mouths (soft mouth in Idle, smile otherwise).
+  // Bones that the clips show or hide by scaling them: the console (Play only), the desk and laptop (Idle and Hi only)
+  // and the two mouths (soft mouth in Idle, smile otherwise).
   const toggles = useMemo(
     () => ({
       console: gltf.scene.getObjectByName("console"),
+      desk: gltf.scene.getObjectByName("desk"),
       mouth: gltf.scene.getObjectByName("mouth"),
       smile: gltf.scene.getObjectByName("smile"),
     }),
@@ -65,7 +74,7 @@ function GlbAvatar({ calm, spin }: SpinProps) {
     const onFinished = (e: { action: unknown }) => {
       if (e.action !== actions["Idle"]) actions["Idle"]?.reset().fadeIn(0.3).play();
     };
-    const onWave = () => play("Wave");
+    const onWave = () => play(actions["Hi"] ? "Hi" : "Wave"); // "Say hi": the seated hello over the laptop
     const onPlay = (e: Event) => play(String((e as CustomEvent).detail));
     mixer.addEventListener("finished", onFinished as never);
     window.addEventListener("avatar-wave", onWave);
@@ -85,6 +94,9 @@ function GlbAvatar({ calm, spin }: SpinProps) {
     const running = Object.entries(actions).filter(([, a]) => a?.isRunning() && a.getEffectiveWeight() > 0.01).map(([n]) => n);
     const HIDDEN = 0.001;
     if (!running.includes("Play")) toggles.console?.scale.setScalar(HIDDEN);
+    // She sits at the laptop in Idle and Hi; any other move stands her up, and the desk goes away until she sits again.
+    const sitting = running.every((n) => n === "Idle" || n === "Hi");
+    toggles.desk?.scale.setScalar(sitting ? 1 : HIDDEN);
     const idling = running.every((n) => n === "Idle");
     toggles.mouth?.scale.setScalar(idling ? 1 : HIDDEN);
     toggles.smile?.scale.setScalar(idling ? HIDDEN : 1);
@@ -133,7 +145,7 @@ function GlbAvatar({ calm, spin }: SpinProps) {
         d.active = false;
         (e.target as unknown as Element).releasePointerCapture?.(e.pointerId);
         document.body.style.cursor = "grab";
-        if (d.moved < 6) play("Wave"); // a click, not a drag
+        if (d.moved < 6) play(actions["Hi"] ? "Hi" : "Wave"); // a click, not a drag
       }}
       onPointerOver={() => (document.body.style.cursor = "grab")}
       onPointerOut={() => {
@@ -306,15 +318,16 @@ function Platform({ calm, spin }: SpinProps) {
   );
 }
 
-export default function Avatar({ calm }: Props) {
+// `at` overrides where she stands ([x, y] in scene units); by default she stands to the right on wide screens.
+export default function Avatar({ calm, at, boost = 1 }: Props & { at?: [number, number]; boost?: number }) {
   const modelStatus = useAssetStatus(AVATAR_URL); // null while checking, so the stand-in never flashes
   const { viewport } = useThree();
   const wide = viewport.width > 7;
-  const s = wide ? 1 : 0.7;
+  const s = (wide ? 1 : 0.7) * boost;
   const spin = useRef(0);
 
   return (
-    <group position={[wide ? 2.4 : 0, wide ? -1.9 : -2.5, 0]} scale={s}>
+    <group position={at ? [at[0], at[1], 0] : [wide ? 2.4 : 0, wide ? -1.9 : -2.5, 0]} scale={s}>
       <Platform calm={calm} spin={spin} />
       {modelStatus === true && <GlbAvatar calm={calm} spin={spin} />}
       {modelStatus === false && <PlaceholderAvatar calm={calm} />}

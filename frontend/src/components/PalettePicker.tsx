@@ -1,10 +1,9 @@
 import { useState } from "react";
 import { PALETTES, type PaletteId } from "../lib/usePalette";
 
+// Swaps the whole color palette. It works in both the dark and the light theme and is remembered between visits.
 export default function PalettePicker() {
-  const [palette, setPalette] = useState<PaletteId>(
-    (document.documentElement.dataset.palette as PaletteId | undefined) ?? "mint",
-  );
+  const [palette, setPalette] = useState<PaletteId>((document.documentElement.dataset.palette as PaletteId | undefined) ?? "maroon");
 
   const choose = (id: PaletteId) => {
     setPalette(id);
@@ -20,7 +19,7 @@ export default function PalettePicker() {
       <select
         value={palette}
         onChange={(e) => choose(e.target.value as PaletteId)}
-        className="rounded-full border-2 border-accent bg-surface px-3 py-1.5 text-sm font-semibold text-fg"
+        className="rounded-full border border-line bg-surface px-3 py-1.5 text-sm font-semibold text-fg"
         aria-label="Color palette"
       >
         {PALETTES.map((p) => <option key={p.id} value={p.id}>{p.label}</option>)}

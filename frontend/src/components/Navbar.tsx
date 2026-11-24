@@ -75,7 +75,7 @@ export default function Navbar() {
         </div>
 
         <button
-          className="rounded-full border-2 border-accent px-4 py-1.5 text-sm font-semibold md:hidden"
+          className="rounded-full border border-line px-4 py-1.5 text-sm font-semibold md:hidden"
           aria-expanded={open}
           aria-controls="mobile-menu"
           onClick={() => setOpen(!open)}

@@ -9,9 +9,10 @@ const links = [
 
 export default function Footer() {
   return (
-    <footer className="relative mt-10 border-t-2 border-accent bg-surface backdrop-blur-md">
-      <div className="mx-auto flex max-w-6xl flex-col items-center gap-6 px-4 py-12 text-center">
-        <p className="font-display gradient-text text-3xl font-bold">{profile.name}</p>
+    <footer className="dark-scope relative overflow-hidden border-t border-line" style={{ background: "var(--footer-bg)" }}>
+      <p aria-hidden="true" className="ghost-year left-0 right-0 top-8 text-center text-[11vw] tracking-[0.04em]">{profile.name}</p>
+      <div className="relative mx-auto flex max-w-6xl flex-col items-center gap-7 px-4 pb-12 pt-32 text-center sm:pt-44">
+        <p className="heading text-4xl text-fg sm:text-5xl">{profile.name}</p>
         <p className="max-w-md text-muted">Game developer building worlds in Unity and Unreal, from gameplay to AR and VR.</p>
         <ul className="flex flex-wrap justify-center gap-3">
           {links.map((l) => (
@@ -20,7 +21,7 @@ export default function Footer() {
                 href={l.href}
                 target={l.href.startsWith("http") ? "_blank" : undefined}
                 rel="noreferrer"
-                className="glass rounded-full px-4 py-2 text-sm font-semibold transition hover:-translate-y-0.5 hover:border-accent"
+                className="glass rounded-full px-5 py-2 text-sm font-semibold transition hover:-translate-y-0.5 hover:border-accent"
               >
                 {l.label}
               </a>

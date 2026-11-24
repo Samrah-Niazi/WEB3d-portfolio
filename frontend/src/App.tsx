@@ -1,7 +1,7 @@
-import { useEffect } from "react";
+import { lazy, Suspense, useEffect } from "react";
 import Navbar from "./components/Navbar";
-import Hero, { MoveChips } from "./components/Hero";
-import Marquee from "./components/Marquee";
+import Hero from "./components/Hero";
+import About from "./components/About";
 import VideoSection from "./components/VideoSection";
 import ChatWidget from "./components/ChatWidget";
 import Backdrop from "./components/Backdrop";
@@ -10,8 +10,10 @@ import ScrollProgress from "./components/ScrollProgress";
 import Preloader from "./components/Preloader";
 import Footer from "./components/Footer";
 import Gallery from "./components/Gallery";
-import { About, Skills, Projects, Experience, Contact } from "./components/Sections";
+import { Skills, Projects, Experience, Contact } from "./components/Sections";
 import { initAnalytics } from "./lib/analytics";
+
+const Numbers = lazy(() => import("./components/Numbers"));
 
 export default function App() {
   useEffect(initAnalytics, []);
@@ -31,16 +33,12 @@ export default function App() {
       <Navbar />
       <main id="main">
         <Hero />
-        {/* Phones: the move chips sit right under the avatar, and the technologies strip lives in the hero text instead. */}
-        <div className="relative z-10 px-4 pb-8 pt-3 md:hidden">
-          <MoveChips className="justify-center" />
-        </div>
-        <div className="hidden md:block">
-          <Marquee />
-        </div>
         <About />
         <VideoSection />
         <Skills />
+        <Suspense fallback={<div className="h-[40rem]" />}>
+          <Numbers />
+        </Suspense>
         <Projects />
         <Experience />
         <Contact />

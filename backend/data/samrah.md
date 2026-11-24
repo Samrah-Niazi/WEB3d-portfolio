@@ -5,6 +5,10 @@
 @section about
 Samrah Niazi is a game developer who builds Unity and Unreal experiences, including 2D/3D games, AR/VR systems, gameplay mechanics, and player-facing UI. She is interested in gameplay programming, level design, and immersive interactive experiences.
 
+## Career goals and what Samrah is looking for
+@section about
+Samrah is looking for challenging roles in game development and AR/VR. She is most passionate about gameplay programming, level design and player-facing UI in Unity and Unreal, and about building immersive experiences that people remember. Her final year project, TALEEM360, shows her interest in using games and AR for learning.
+
 ## Education
 @section experience
 Samrah is studying a Bachelor of Computer Science and Information Technology at NED University of Engineering and Technology, 2023 to 2027, with a specialization in Gaming & Animation.
@@ -25,7 +29,7 @@ From June to August 2026 Samrah worked independently as a self-employed game and
 ## Research: TALEEM360 final year design project
 @section projects
 TALEEM360 is Samrah's Final Year Design Project (dissertation in progress), running July 2026 to June 2027. Supervisor: Sadia Arshad. Co-supervisor: Dr. Usman Amjad.
-It is an AI-powered bilingual Augmented Reality learning companion. It uses AR marker and computer-vision recognition to turn textbook diagrams into interactive 3D STEM models, with bilingual explanations and a curriculum-constrained AI companion. It aims to improve educational accessibility for underprivileged government-school students. A publication is planned on completion.
+It is an AI-powered bilingual Augmented Reality learning companion. It uses AR marker and computer-vision recognition to turn textbook diagrams into interactive 3D STEM models, with bilingual explanations and a curriculum-constrained AI companion. It aims to improve educational accessibility for underprivileged students. A publication is planned on completion.
 
 ## Achievements and awards
 @section projects
@@ -45,6 +49,14 @@ Programming languages: C#, C/C++, Python, SQL, HTML, CSS, JavaScript.
 @section skills
 Human-computer interaction and UI/UX design: player onboarding flows, menu and HUD design, interaction feedback systems.
 Tools: Git/GitHub, VS Code, Dev C++, MySQL Workbench, PostgreSQL, XAMPP, Blender (basics), Adobe After Effects (basics).
+
+## Project overview: how many projects and games Samrah has worked on
+@section projects
+Samrah has worked on 11 game projects and 15 projects overall. The Projects section of her portfolio lists only the ones that are deployed or publicly available: The Unbroken Oath, The Abduction, VR Escape Room, Spikes Rush, Warp: Fractured Reality, Super Jump, Spot the Difference, Multiplayer Ludo, TALEEM360, the NED Masters Admissions Portal, AI Code Mentor and the Cyber Cafe Management System. The other projects she worked on were never deployed, so they are not shown in the Projects section, but they are part of her experience. She does not have details of those unreleased projects in this knowledge base.
+
+## Project: Multiplayer Ludo
+@section projects
+Multiplayer Ludo is a real-time multiplayer Ludo game that Samrah built in Unity as a self-employed developer in June to August 2026. She also built the Laravel admin panel and the Node.js backend, with load balancing, that runs the game.
 
 ## Project: The Unbroken Oath
 @section projects

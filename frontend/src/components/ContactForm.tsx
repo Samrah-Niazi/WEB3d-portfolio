@@ -19,7 +19,7 @@ function validate(v: Fields): Errors {
   return e;
 }
 
-const inputClass = "w-full rounded-xl border-2 bg-bg/60 px-4 py-2.5";
+const inputClass = "w-full rounded-xl border bg-black/40 px-4 py-2.5 text-fg outline-none transition focus:border-accent";
 
 export default function ContactForm() {
   const [values, setValues] = useState<Fields>({ name: "", email: "", subject: "", message: "" });

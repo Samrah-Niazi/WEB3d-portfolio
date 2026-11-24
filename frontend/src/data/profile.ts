@@ -6,20 +6,15 @@ export const profile = {
     "I build Unity and Unreal experiences: 2D/3D games, AR/VR systems, gameplay mechanics, and player-facing UI.",
   about: [
     "I'm a Computer Science and Information Technology student at NED University of Engineering and Technology (2023–2027), specializing in Gaming & Animation.",
-    "I build Unity and Unreal experiences, including 2D/3D games, AR/VR systems, gameplay mechanics, and player-facing UI. I'm interested in gameplay programming, level design, and immersive interactive experiences.",
-    "My final year project, TALEEM360, is an AI-powered bilingual AR learning companion that turns textbook diagrams into interactive 3D STEM models for government-school students.",
+    "I turn ideas into playable worlds. Unity and Unreal are my toolkit, and gameplay programming, level design and player-facing UI are what I'm most passionate about. So far that adds up to 11 game projects out of 15 builds: the ones that are live are in Work below, and the rest are still in the lab.",
+    "My final year project, TALEEM360, is where games meet learning: an AI-powered, bilingual AR companion that turns textbook diagrams into interactive 3D STEM models for underprivileged students. I'm now looking for challenging roles in game development and AR/VR, where I can build experiences people remember.",
   ],
+
   email: "samrahniazi677@gmail.com",
   github: "https://github.com/samrah-niazi",
   linkedin: "https://www.linkedin.com/in/samrah-niazi-3176ab323",
   itch: "https://samrah-niazi.itch.io",
 };
-
-export const stats = [
-  { value: "7", label: "Game projects" },
-  { value: "2", label: "Awards at TechFest'26" },
-  { value: "3", label: "Engines & platforms: Unity, Unreal, Meta Quest" },
-];
 
 export const skills = [
   {
@@ -158,6 +153,14 @@ export const projects: Project[] = [
     category: "Game",
   },
   {
+    title: "Multiplayer Ludo",
+    stack: "Unity · Node.js · Laravel · Real-time multiplayer",
+    summary:
+      "Real-time multiplayer Ludo game built in Unity, with a Laravel admin panel and a Node.js backend (with load balancing) that runs it. Built as an independent project.",
+    tags: ["Unity", "Multiplayer", "Node.js", "Laravel"],
+    category: "Game",
+  },
+  {
     title: "NED Masters Admissions Portal",
     stack: "PHP · MySQL · Web Application",
     summary: "Admissions web app with a responsive student UI, admin panel, and PHP/MySQL backend with form validation.",
@@ -243,4 +246,14 @@ export const community = [
   "Co-Lead, Marketing (NST) · Co-Lead, Photography (SOFE) · Former Member, Operations (TNF).",
   "Participated in TechFest, GameCon (NED and CEGA), and a Game Jam at IBA University.",
   "Attended hands-on Blender and 3D modelling workshops, including “3D Design in Blender” at TechFest.",
+];
+
+// Everything Samrah has worked on, including projects that were never deployed (those are not listed in the Projects section).
+export const totals = { games: 11, projects: 15 };
+
+// The three numbers on the About page. They are counted from the lists above, so they never go out of date.
+export const stats = [
+  { value: String(totals.games), label: "Game projects" },
+  { value: String(achievements.length), label: "Awards at TechFest'26" },
+  { value: "3", label: "Engines & platforms: Unity, Unreal, Meta Quest" },
 ];
