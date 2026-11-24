@@ -45,11 +45,11 @@ Status as of 24 Nov 2026. `[x]` = done and checked, `[~]` = built but still need
 ## Module 5: Email and contact system
 - [x] Form with name, email, subject and message
 - [x] Validation in the browser and on the server
-- [~] Sends messages to your email address (set up, but a real delivery has not been tested)
+- [x] Sends messages to your email address (a test message arrived in the inbox)
 - [x] Success and error messages
 - [x] Credentials and API keys in environment variables (`backend/.env`, never committed)
 - [x] Spam protection (hidden trap field, rate limiting) and safe handling of input
-- [ ] **Evidence of successful email delivery:** send one message from the form and screenshot it arriving in your inbox
+- [x] Evidence of successful email delivery: `docs/screenshots/15-email-inbox.jpg` (in the report, section 8.1)
 
 ## Module 6: Deployment and documentation
 - [ ] **Redeploy the new design** (the live Vercel site still shows the old design)
@@ -72,7 +72,7 @@ Status as of 24 Nov 2026. `[x]` = done and checked, `[~]` = built but still need
 - [x] Blender source file and exported avatar model
 - [x] After Effects project file and final video
 - [x] Working RAG chatbot
-- [~] Functional contact system (needs the delivery screenshot above)
+- [x] Functional contact system
 - [x] Project report in PDF: `docs/report/Samrah_Niazi_Project_Report.pdf` (editable copy: `.docx`; rebuild with `python docs/report/build_report.py`)
 - [x] README with setup and installation instructions
 - [x] Screenshots of the major modules (`docs/screenshots/`, used in the report)

@@ -93,6 +93,7 @@ p("Materials use Blender's Principled shader with a base color for each part and
 fig("17-blender-avatar.jpg", "The avatar rendered in Blender, seated at the laptop.", 9.0)
 h2("5.3 Rig and animations")
 p("The rig has 24 bones, including a desk bone and a feet bone. Eight animations are stored as NLA tracks and exported with the model: Idle, Hi, Wave, Nod, Cheer, Twirl, Think and Play. In the seated Idle and Hi poses the desk is shown, so only the upper body is visible and the face is fully visible above the laptop; for the other moves the desk is scaled away so the avatar can stand and move freely.")
+fig("19-blender-rig.jpg", "The rig: 24 bones shown over the avatar in its seated pose (hips, spine, chest, neck, head, eyes, arms, hands, skirt, feet).", 9.0)
 h2("5.4 Export and integration")
 p("The model is exported as GLB (assets/blender/avatar.glb) and copied to frontend/public/models/. The site loads it with React Three Fiber, fits it to a fixed height automatically, loops Idle, and plays Hi when it is tapped. Dragging anywhere on the 3D area rotates the avatar; the listeners sit on the canvas itself and use touch-action pan-y, so a phone user can still scroll the page vertically. The source file avatar.blend is included with the submission.")
 
@@ -112,6 +113,8 @@ table(["Scene", "Content"], [
     ["Contact", "Let's talk, with email and profile links"],
 ], [3.0, 13.0])
 fig("18-promo-sheet.jpg", "Frames from the promo, one every four seconds.", 15.5)
+fig("20-ae-frame.jpg", "A full-size frame of the promo (at 8 seconds): the portrait scene.", 15.0)
+fig("21-ae-timeline.png", "Layer timeline of the main composition: nine scene compositions in sequence over the soundtrack and the shared effect layers.", 15.5)
 h2("6.2 Typography, motion and sound")
 p("Type pairs a heavy condensed sans for statements with a serif for titles and a small monospace for labels. Effects include Fractal Noise for the mist, CC Ball Action for the particles, Glow, Turbulent Displace, Linear Wipe, a Grid for the floor, 3D layers with a camera, and eased scale and position animation. The background music is an original 48-second track in A minor at 120 BPM, composed by a Python script (assets/aftereffects/make_music.py), so there is no copyright or license to manage.")
 h2("6.3 Rendering and delivery")
@@ -161,7 +164,10 @@ table(["Field", "Rule"], [
 ], [4.0, 12.0])
 p("The browser checks these rules first and shows an inline message under each field. The server checks them again with Zod and answers 400 with one message per field, so the rules hold even if someone calls the API directly.")
 fig("10-contact-errors.jpg", "Submitting the empty form: inline validation messages under every field.")
-h2("8.1 Spam protection and safe handling of input")
+h2("8.1 Evidence of delivery")
+p("A test message was sent through the form on the live site and arrived in Samrah's inbox. The email comes from the \"Portfolio contact form\" sender, its subject starts with [Portfolio] followed by the visitor's subject, and its body lists the visitor's name, email address, subject and message, so Samrah can reply to the right person.")
+fig("15-email-inbox.jpg", "The test message received in the inbox after sending it from the contact form.", 15.0)
+h2("8.2 Spam protection and safe handling of input")
 bullets(
     "Honeypot: a hidden field that people never see; bots fill it in. The server answers \"success\" but sends nothing.",
     "Minimum fill time: forms sent less than 3 seconds after the page loaded are dropped the same way.",
@@ -170,7 +176,7 @@ bullets(
     "Plain-text mail: the message is never sent as HTML, so markup or scripts inside it are never interpreted. Control characters are stripped.",
     "Limits and headers: request bodies are capped at 20 KB, helmet sets security headers, and CORS allows only the site's own origin.",
 )
-h2("8.2 Credentials")
+h2("8.3 Credentials")
 p("The SMTP user and password, the recipient address and the API keys are read from environment variables: backend/.env locally and the host's settings on Vercel. The .env file is excluded from Git, and the repository only contains .env.example with empty values. If credentials are missing the endpoint answers 503 and the form shows an error message instead of pretending to succeed. Every send is also logged with the SMTP message id.")
 
 # ---------------------------------------------------------------- 9
@@ -194,6 +200,7 @@ table(["Area", "What was tested", "Result"], [
     ["Chatbot, out of scope", "Favourite food, president of France", "Politely refused, no sources"],
     ["Chatbot, language", "Internship question in Urdu, language set to Urdu", "Answered in Urdu with sources"],
     ["Contact form", "Empty submission", "Inline errors in the browser; the API returns 400 with a message per field"],
+    ["Contact form, delivery", "Valid message sent from the live site", "Email arrived in the inbox with the visitor's details (section 8.1)"],
     ["Responsive layout", "320, 360, 390, 430, 768 and 1024 px wide", "No element wider than the screen after the fixes in section 4.6"],
     ["Themes", "Four palettes, dark and light", "All sections readable; light themes differ from dark"],
     ["Projects", "Search, category filter and ordering", "Results update immediately"],
