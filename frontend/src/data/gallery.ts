@@ -102,7 +102,7 @@ export const galleryItems: GalleryItem[] = Object.entries(files)
   .filter((x): x is GalleryItem => x !== null)
   .sort((a, b) => {
     // The award photos come first, then the other LinkedIn pictures, then game screenshots and the rest.
-    const rank = (i: GalleryItem) => (isAward(i) ? 0 : i.source === "LinkedIn" ? 1 : 2);
+    const rank = (i: GalleryItem) => (isAward(i) ? 0 : i.source === "LinkedIn" || i.category === "Achievements" ? 1 : 2);
     return rank(a) - rank(b) || a.id.localeCompare(b.id, undefined, { numeric: true });
   });
 
