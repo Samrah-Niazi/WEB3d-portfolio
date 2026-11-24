@@ -319,11 +319,12 @@ function Platform({ calm, spin }: SpinProps) {
 }
 
 // `at` overrides where she stands ([x, y] in scene units); by default she stands to the right on wide screens.
-export default function Avatar({ calm, at, boost = 1 }: Props & { at?: [number, number]; boost?: number }) {
+export default function Avatar({ calm, at, boost = 1, narrowBoost }: Props & { at?: [number, number]; boost?: number; narrowBoost?: number }) {
   const modelStatus = useAssetStatus(AVATAR_URL); // null while checking, so the stand-in never flashes
   const { viewport } = useThree();
   const wide = viewport.width > 7;
-  const s = (wide ? 1 : 0.7) * boost;
+  // `narrowBoost` is the size multiplier on phones (it defaults to `boost`)
+  const s = (wide ? 1 : 0.7) * (wide ? boost : (narrowBoost ?? boost));
   const spin = useRef(0);
 
   return (

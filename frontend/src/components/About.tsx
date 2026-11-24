@@ -81,89 +81,33 @@ function Spot() {
   );
 }
 
-// Wide screens, all automatic: as you arrive the "About me" card slams in, holds for a beat, then zooms past you
-// while the spotlight snaps on and the avatar rises into the beam. No scrolling needed to move it along.
+// Wide screens: the spotlight stage is simply there, right after the hero, with the avatar already in the beam.
+// The text slides in as it comes into view; nothing waits on an intro animation.
 function Stage() {
   const ref = useRef<HTMLElement>(null);
-  const near = useInView(ref, { margin: "300px" });
-  const arrived = useInView(ref, { amount: 0.5 });
-  const [phase, setPhase] = useState<"idle" | "card" | "stage">("idle");
-  const started = useRef(false);
-
-  useEffect(() => {
-    if (!arrived || started.current) return;
-    started.current = true;
-    setPhase("card");
-    window.setTimeout(() => setPhase("stage"), 1900);
-  }, [arrived]);
-
-  const card = {
-    idle: { opacity: 0, scale: 1.7, rotateX: 28, filter: "blur(20px)" },
-    card: { opacity: 1, scale: 1, rotateX: 0, filter: "blur(0px)", transition: { duration: 0.85, ease: [0.16, 1, 0.3, 1] as const } },
-    stage: { opacity: 0, scale: 6, rotateX: 0, filter: "blur(14px)", transition: { duration: 0.8, ease: [0.7, 0, 0.84, 0] as const } },
-  };
-  const lit = { idle: { opacity: 0 }, card: { opacity: 0 }, stage: { opacity: 1, transition: { duration: 0.6, delay: 0.35 } } };
-  const beam = {
-    idle: { opacity: 0, scaleX: 0.15 },
-    card: { opacity: 0, scaleX: 0.15 },
-    stage: { opacity: 1, scaleX: 1, transition: { duration: 1, delay: 0.3, ease: "easeOut" as const } },
-  };
-  const avatar = {
-    idle: { opacity: 0, y: 90, scale: 0.9 },
-    card: { opacity: 0, y: 90, scale: 0.9 },
-    stage: { opacity: 1, y: 0, scale: 1, transition: { duration: 1, delay: 0.55, ease: [0.16, 1, 0.3, 1] as const } },
-  };
+  const near = useInView(ref, { margin: "1200px" }); // start drawing the avatar well before it is on screen
   const side = (dir: number) => ({
-    idle: { opacity: 0, x: dir * 70 },
-    card: { opacity: 0, x: dir * 70 },
-    stage: { opacity: 1, x: 0, transition: { duration: 0.8, delay: 0.95, ease: "easeOut" as const } },
+    initial: { opacity: 0, x: dir * 40 },
+    whileInView: { opacity: 1, x: 0 },
+    viewport: { once: true, amount: 0.2 },
+    transition: { duration: 0.5, ease: "easeOut" as const },
   });
 
   return (
     <section id="about" ref={ref} className="dark-scope relative h-svh min-h-[40rem] overflow-hidden">
       <Painted />
-
-      <motion.div variants={lit} animate={phase} initial="idle" className="absolute inset-0">
-        <motion.div variants={beam} animate={phase} initial="idle" style={{ transformOrigin: "50% 0%" }} className="absolute inset-0">
-          <Spot />
-        </motion.div>
-      </motion.div>
-      <motion.div variants={avatar} animate={phase} initial="idle" className="absolute inset-0 z-10">
+      <h2 className="sr-only">About me</h2>
+      <Spot />
+      <div className="absolute inset-0 z-10">
         <Suspense fallback={null}>
           <AboutScene active={near} />
         </Suspense>
-      </motion.div>
-
-      {/* a flash as the light snaps on */}
-      <motion.div
-        aria-hidden="true"
-        className="pointer-events-none absolute inset-0 z-30 bg-white"
-        initial={{ opacity: 0 }}
-        animate={phase === "stage" ? { opacity: [0, 0.45, 0] } : { opacity: 0 }}
-        transition={{ duration: 0.7, delay: 0.3 }}
-      />
-
-      {/* "About me" card */}
-      <div className="pointer-events-none absolute inset-0 z-20 grid place-items-center px-6" style={{ perspective: 1400 }}>
-        <motion.div
-          variants={card}
-          animate={phase}
-          initial="idle"
-          className="relative w-[min(88vw,58rem)] rounded-[10px] border border-fg/30 bg-black/55 px-8 py-10 shadow-[0_40px_90px_rgb(0_0_0/0.7)] backdrop-blur-md"
-        >
-          <p className="eyebrow !text-fg/70">01 / About</p>
-          <h2 className="impact glow-text text-[clamp(5rem,15vw,13rem)] text-fg">
-            About<br />me
-          </h2>
-        </motion.div>
       </div>
 
       {/* the story, either side of the avatar */}
       <div className="pointer-events-none absolute inset-0 z-20">
         <motion.div
-          variants={side(-1)}
-          animate={phase}
-          initial="idle"
+          {...side(-1)}
           className="absolute left-[4vw] top-1/2 w-[27vw] max-w-sm -translate-y-1/2 space-y-4 text-[0.98rem] leading-relaxed text-fg/90"
         >
           <p className="eyebrow">01 / About</p>
@@ -171,9 +115,7 @@ function Stage() {
           {profile.about.slice(0, 2).map((t) => <p key={t}>{t}</p>)}
         </motion.div>
         <motion.div
-          variants={side(1)}
-          animate={phase}
-          initial="idle"
+          {...side(1)}
           className="pointer-events-auto absolute right-[4vw] top-1/2 w-[27vw] max-w-sm -translate-y-1/2 space-y-4 text-[0.98rem] leading-relaxed text-fg/90"
         >
           <div className="flex items-end gap-4">
@@ -196,11 +138,11 @@ function Stacked() {
   return (
     <section id="about" className="dark-scope relative overflow-hidden">
       <Painted />
-      <div className="relative z-10 mx-auto max-w-6xl px-4 py-24">
+      <div className="relative z-10 mx-auto max-w-6xl px-4 pb-24 pt-20">
         <p className="eyebrow !text-fg/70">01 / About</p>
-        <h2 className="impact glow-text text-[clamp(4.5rem,22vw,12rem)] text-fg">About me</h2>
+        <h2 className="impact glow-text text-[clamp(3.4rem,17vw,10rem)] text-fg">About me</h2>
 
-        <div ref={ref} className="relative mt-6 h-[30rem] sm:h-[36rem]">
+        <div ref={ref} className="relative mt-3 h-[21rem] sm:h-[34rem]">
           <Spot />
           <div className="absolute inset-0 z-10">
             <Suspense fallback={null}>
@@ -208,6 +150,8 @@ function Stacked() {
             </Suspense>
           </div>
         </div>
+        {/* the move buttons live right under the avatar, so you can see her do each move without scrolling */}
+        <MoveChips className="relative z-20 mb-12 mt-2 justify-center" />
 
         <div className="grid gap-10 lg:grid-cols-[1.6fr_1fr]">
           <div className="space-y-4 text-lg text-fg/90">
@@ -216,7 +160,6 @@ function Stacked() {
           <div className="space-y-6">
             <Photo className="aspect-[3/4] w-44 -rotate-2" />
             <Stats />
-            <MoveChips />
           </div>
         </div>
       </div>

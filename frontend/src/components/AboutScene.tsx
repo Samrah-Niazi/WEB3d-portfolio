@@ -27,7 +27,7 @@ export default function AboutScene({ active = true }: { active?: boolean }) {
       <pointLight position={[-3, 1, 3]} intensity={22} color={c1} />
       <pointLight position={[3, 1, 3]} intensity={18} color={c3} />
       <Suspense fallback={<LoadingBadge />}>
-        <Avatar calm={calm} at={[0, -1.55]} boost={1.2} />
+        <Avatar calm={calm} at={[0, -1.55]} boost={1.2} narrowBoost={2} />
       </Suspense>
     </Canvas>
   );
