@@ -3,9 +3,9 @@
 // and a dot-matrix portrait on a wireframe grid, giant type, white "paper" beats and a red neon ending.
 //
 // Run it inside After Effects (File > Scripts > Run Script File...) or unattended:
-//   AfterFX.exe -noui -r assets/aftereffects/build_promo_niazi.jsx
+//   AfterFX.exe -noui -r assets/aftereffects/build_samrah_niazi_promo.jsx
 // It imports the footage next to this script (footage/portrait, footage/screens, footage/music_niazi.wav), builds every
-// scene as its own composition, and saves samrah_promo_niazi.aep beside it. Render with aerender (see README).
+// scene as its own composition, and saves samrah_niazi_promo.aep beside it. Render with aerender (see README).
 //
 // Scenes (seconds): 0-4 loading, 4-12 portrait, 12-18 particle title, 18-26 skills globe, 26-32 numbers,
 // 32-36 work, 36-38 paper beat, 38-42 recognition, 42-48 contact.
@@ -514,7 +514,7 @@
     } catch (errS8) { log("S8 FAILED: " + String(errS8) + " line " + errS8.line); }
 
     // ================================================================ main composition
-    var main = proj.items.addComp("Samrah Promo Niazi", W, H, 1, DUR, FPS);
+    var main = proj.items.addComp("Samrah Niazi Promo", W, H, 1, DUR, FPS);
     main.bgColor = C.ink;
     try {
         var order = [["S0 Loading", 0], ["S1 Portrait", 4], ["S2 Particles", 12], ["S3 Toolkit", 18], ["S4 Numbers", 26], ["S5 Work", 32], ["S6 Paper", 36], ["S7 Awards", 38], ["S8 Contact", 42]];
@@ -562,7 +562,7 @@
     } catch (errMain) { log("MAIN FAILED: " + String(errMain) + " line " + errMain.line); }
 
     main.openInViewer();
-    var out = new File(base.fsName + "/samrah_promo_niazi.aep");
+    var out = new File(base.fsName + "/samrah_niazi_promo.aep");
     app.project.save(out);
     log("SAVED " + out.fsName);
     app.quit();
