@@ -8,7 +8,7 @@ A responsive portfolio with a 3D hero and avatar (React + Three.js), a RAG-based
 |---|---|
 | 1. 3D portfolio site | Done |
 | 2. Blender avatar | Done: `assets/blender/avatar.blend` (source), `avatar.glb` (web export, copied to `frontend/public/models/`), built by `assets/blender/build_avatar.py` from `assets/reference/profile-reference-2.jpg` |
-| 3. After Effects video | Done: `assets/aftereffects/samrah_promo_dark.aep` and `promo_dark.mp4` (48 s, original music), embedded on the site |
+| 3. After Effects video | Done: `assets/aftereffects/samrah_promo_niazi.aep` and `promo_niazi.mp4` (48 s, original music), embedded on the site |
 | 4. RAG chatbot | Done ([how it works](docs/rag-pipeline.md)) |
 | 5. Contact system | Done ([details](docs/contact-system.md)) |
 | 6. Deployment and docs | Docs done. Redeploy the new design to Vercel, then fill in the live URL, screenshots and the PDF report |

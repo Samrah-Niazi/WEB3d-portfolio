@@ -1,4 +1,4 @@
-"""Composes the original soundtrack for the dark promo: a 48 second dark cinematic track at 120 BPM in A minor.
+"""Composes the original soundtrack for the Niazi promo: a 48 second dark cinematic track at 120 BPM in A minor.
 It is generated from code (pads, sub bass, kick, hats, a plucked arpeggio, risers and impacts), so it is original,
 royalty-free and needs no license. Usage: python make_music.py out.wav
 Scene cuts of the video (seconds): 4 portrait, 12 particles, 18 globe, 26 numbers, 32 work, 38 trophies, 42 contact, 48 end."""

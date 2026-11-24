@@ -29,7 +29,7 @@ Status as of 24 Nov 2026. `[x]` = done and checked, `[~]` = built but still need
 - [x] Typography, transitions, animation and effects
 - [x] Background music that is properly licensed (original track composed in code, no license needed)
 - [x] Exported as MP4 and embedded in the portfolio (Intro video section)
-- [x] Deliverables: `assets/aftereffects/promo_dark.mp4` and `samrah_promo_dark.aep`
+- [x] Deliverables: `assets/aftereffects/promo_niazi.mp4` and `samrah_promo_niazi.aep`
 
 ## Module 4: RAG chatbot
 - [x] Information collected from the CV, projects, skills, education and achievements (`backend/data/samrah.md`)
